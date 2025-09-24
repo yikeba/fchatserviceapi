@@ -1,0 +1,64 @@
+name: fchatapi
+description: "fchatapi"
+version: 0.0.6
+homepage: "fchat.us"
+
+environment:
+  sdk: ^3.5.4
+  flutter: '>=3.3.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  web: ^1.0.0
+  plugin_platform_interface: ^2.0.2
+  crypto: ^3.0.1     #各种加密，签名综合组件
+  flutter_screenutil: ^5.8.1
+  chewie: 1.7.0
+  http_client: ^1.5.2
+  http_parser: ^4.0.1
+  dio: ^5.8.0
+  intl: ^0.20.2
+  quickalert: ^1.0.1   #弹出框
+  url_launcher: ^6.1.11
+  path: ^1.8.3
+  flutter_stripe: ^11.4.0  #付款支付插件，支持ios google masert visa
+  flutter_stripe_web: ^6.4.0  #web版本
+  translator: ^1.0.3+1  #免费翻译插件
+  country_currency_pickers: ^3.0.0     #货币数据与国旗插件
+  language_picker: ^0.4.5
+  encrypt: ^5.0.3   #加密，解密
+  flutter_credit_card: ^4.0.1  #检查信用卡合法性,输入ui
+
+  geolocator: ^13.0.1   #gps定位插件
+  qr_flutter: ^4.1.0  #显示二维码
+  flutter_map: ^7.0.2 #免费地图
+  lottie: ^3.2.0  #载入动画组件
+  universal_html: ^2.2.3  #跨平台判断引用，解决web的html引用导致app编译问题
+
+  image: ^4.1.3
+  sign_in_with_apple: ^6.1.4
+  firebase_auth: ^5.5.1  #用于appleid googleid 本地验证
+  firebase_core: ^3.12.1
+  flutter_dotenv: ^5.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  assets:
+    - assets/img/
+    - assets/pay/
+    - assets/json/zto.json
+    - assets/.env
+
+  plugin:
+    platforms:
+      web:
+        pluginClass: FchatapiWeb
+        fileName: fchatapi_web.dart
+
