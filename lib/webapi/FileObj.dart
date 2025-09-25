@@ -67,7 +67,6 @@ class FileObj {
     }
     map.putIfAbsent("md5", () => md5Hash);
     map.putIfAbsent("sapppath", () => filemd.name);
-    //print("上传服务器文本map$map");
     return map;
   }
 
@@ -380,20 +379,20 @@ class FileArrObj {
 
 
 abstract class FileMD {
-  final String name;
-  const FileMD(this.name);
+  String name;
+  FileMD(this.name);
 
-  static const FileMD base = _DefaultFileMD('base');
-  static const FileMD assets = _DefaultFileMD('assets');
-  static const FileMD image = _DefaultFileMD('image');
-  static const FileMD video = _DefaultFileMD('video');
-  static const FileMD product = _DefaultFileMD('product');
-  static const FileMD tmporder = _DefaultFileMD('tmporder');
-  static const FileMD order = _DefaultFileMD('order');
-  static const FileMD payorder = _DefaultFileMD('payorder');
-  static const FileMD other = _DefaultFileMD('other');
+  static  FileMD base = _DefaultFileMD('base');
+  static  FileMD assets = _DefaultFileMD('assets');
+  static  FileMD image = _DefaultFileMD('image');
+  static  FileMD video = _DefaultFileMD('video');
+  static  FileMD product = _DefaultFileMD('product');
+  static  FileMD tmporder = _DefaultFileMD('tmporder');
+  static  FileMD order = _DefaultFileMD('order');
+  static  FileMD payorder = _DefaultFileMD('payorder');
+  static  FileMD other = _DefaultFileMD('other');
 
-  static const List<FileMD> values = [
+  static  List<FileMD> values = [
     base, assets, image, video, product, tmporder, order, payorder, other
   ];
 
@@ -403,14 +402,13 @@ abstract class FileMD {
 
 // 内部默认实现，防止外部直接实例化
 class _DefaultFileMD extends FileMD {
-  const _DefaultFileMD(String name) : super(name);
+  _DefaultFileMD(super.name);
 }
 
 // 客户可以继承 FileMD 并扩展
 class CustomFileMD extends FileMD {
-  const CustomFileMD(String name) : super(name);
-
-  static const FileMD logs = CustomFileMD('logs');
+  CustomFileMD(super.name);
+  static  FileMD logs = CustomFileMD('logs');
 }
 
 
