@@ -4,7 +4,6 @@ import 'package:fchatapi/util/JsonUtil.dart';
 import 'package:fchatapi/util/SignUtil.dart';
 import 'package:fchatapi/util/Tools.dart';
 import 'package:fchatapi/util/UserObj.dart';
-
 import '../util/PhoneUtil.dart';
 
 
@@ -18,6 +17,7 @@ enum ApiName {
   sendurl,
   order, //服务号订单
   voice,  //语音播放
+  promo,    //优惠券api接口，通过参数识别，读取，验证，核销
   appport
 }
 

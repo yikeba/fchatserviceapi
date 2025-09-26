@@ -32,7 +32,7 @@ dependencies:
   encrypt: ^5.0.3   #加密，解密
   flutter_credit_card: ^4.0.1  #检查信用卡合法性,输入ui
 
-  geolocator: ^13.0.1   #gps定位插件
+  geolocator: ^14.0.2   #gps定位插件
   qr_flutter: ^4.1.0  #显示二维码
   flutter_map: ^7.0.2 #免费地图
   lottie: ^3.2.0  #载入动画组件

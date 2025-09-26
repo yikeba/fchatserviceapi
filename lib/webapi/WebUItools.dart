@@ -29,8 +29,7 @@ class WebUItools{
         PhoneUtil.applog("app支付回调通知，本地进行验证$payid");
         PhoneUtil.applog("网页服务号验证支付url$url");
         html.window.location.href = url;
-        //发送消息到预定客户
-        Sendorder(payid,pobj.money,pobj.paystr,url).send((value){
+        Sendorder(payid,pobj.money,pobj.paystr,url).send((value){   //发送消息到预定客户
           PhoneUtil.applog("发送订单消息到app，收到回复$value");
         });
       });

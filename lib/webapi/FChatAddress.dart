@@ -1,6 +1,7 @@
 
-import '../util/JsonUtil.dart';
 import 'package:geolocator/geolocator.dart';
+
+import '../util/JsonUtil.dart';
 import '../util/OsmAddress.dart';
 
 class FChatAddress{
