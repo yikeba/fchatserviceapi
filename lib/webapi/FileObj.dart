@@ -100,12 +100,12 @@ class FileObj {
       if (response.statusCode == 200) {
         upstate(true);
         String rec = JsonUtil.getbase64(response.data);
-        print("writeByte文件上传成功: $rec");
+        PhoneUtil.applog("writeByte文件上传成功: $rec");
       } else {
-        print("文件上传失败: ${response.statusCode}");
+        PhoneUtil.applog("文件上传失败: ${response.statusCode}");
       }
     } catch (e) {
-      print("上传过程中出现错误: $e");
+      PhoneUtil.applog("writeByte上传过程中出现错误: $e");
     }
   }
 
@@ -153,7 +153,7 @@ class FileObj {
         print("文件上传失败: ${response.statusCode}");
       }
     } catch (e) {
-      print("上传过程中出现错误: $e");
+      PhoneUtil.applog("editData上传过程中出现错误: $e");
     }
   }
 
@@ -201,7 +201,7 @@ class FileObj {
         print("文件上传失败: ${response.statusCode}");
       }
     } catch (e) {
-      print("上传过程中出现错误: $e");
+      PhoneUtil.applog("writeData 上传过程中出现错误: $e");
     }
   }
 
@@ -265,7 +265,7 @@ class FileObj {
         PhoneUtil.applog("文件上传失败: ${response.statusCode}");
       }
     } catch (e) {
-      print("上传过程中出现错误: $e");
+      PhoneUtil.applog("writefile 上传过程中出现错误: $e");
     }
   }
 

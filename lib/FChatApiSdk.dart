@@ -53,7 +53,6 @@ class FChatApiSdk {
     });
     BaseJS.apiRecdatainit();  //初始化app接口
     Loginfchat().send((value){
-      //PhoneUtil.applog("返回Fchat 环境内容:$value");
        if(value=="err") value="";
        if(value.isEmpty) {
          appcall(false);
