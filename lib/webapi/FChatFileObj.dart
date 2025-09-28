@@ -56,11 +56,7 @@ class FChatFileObj {
   Map<String, dynamic> _getDataMap() {
     Map<String, dynamic> map = {};
     map.putIfAbsent("userid", () => UserObj.userid);
-    if(ispublic){
-      map.putIfAbsent("command", () => WebCommand.upDatapublic);
-    }else{
-      map.putIfAbsent("command", () => WebCommand.fchatupData);
-    }
+    map.putIfAbsent("command", () => WebCommand.fchatupData);
     map.putIfAbsent("filename", () => filename);
     map.putIfAbsent("sapppath", () => filemd.name);
     return map;
@@ -164,19 +160,10 @@ class FChatFileObj {
         print("数据转换base64 byte错误");
         return;
       }
-      //print("上传文本二进制长度${fileBytes!.length}");
       Map<String, dynamic> map = _getDataMap();
-      map.putIfAbsent(
-        'file',
-            () => MultipartFile.fromBytes(
-          fileBytes!,
-          filename: name,
-          contentType: MediaType('text', 'html'),
-        ),
-      );
+      map.putIfAbsent('data', () => data);
       FormData formData = FormData.fromMap(map);
-      // 发送 POST 请求
-      String url = HttpWebApi.geturl();
+      String url = HttpWebApi.geturl();     // 发送 POST 请求
       Response response = await _dio.post(
         url,
         data: formData,
@@ -257,7 +244,7 @@ class FChatFileObj {
   Map<String, dynamic> _getreadMap(path) {
     Map<String, dynamic> map = {};
     map.putIfAbsent("userid", () => UserObj.userid);
-    map.putIfAbsent("command", () => WebCommand.readfile);
+    map.putIfAbsent("command", () => WebCommand.fchatreadfile);
     map.putIfAbsent("sapppath", () => path);
     return map;
   }
@@ -299,7 +286,7 @@ class FChatFileArrObj {
   Map<String, dynamic> _getReadmdMap(String md) {
     Map<String, dynamic> map = {};
     map.putIfAbsent("userid", () => UserObj.userid);
-    map.putIfAbsent("command", () => WebCommand.readMD);
+    map.putIfAbsent("command", () => WebCommand.fchatreadMD);
     map.putIfAbsent("sapppath", () => md);
     return map;
   }
@@ -307,7 +294,7 @@ class FChatFileArrObj {
   Map<String, dynamic> _getReadfileMap(String md, String name) {
     Map<String, dynamic> map = {};
     map.putIfAbsent("userid", () => UserObj.userid);
-    map.putIfAbsent("command", () => WebCommand.readfile);
+    map.putIfAbsent("command", () => WebCommand.fchatreadfile);
     map.putIfAbsent("sapppath", () => md + "/" + name);
     return map;
   }

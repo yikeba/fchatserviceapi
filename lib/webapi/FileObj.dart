@@ -170,7 +170,6 @@ class FileObj {
         print("数据转换base64 byte错误");
         return;
       }
-      //print("上传文本二进制长度${fileBytes!.length}");
       Map<String, dynamic> map = _getDataMap();
       map.putIfAbsent(
         'file',

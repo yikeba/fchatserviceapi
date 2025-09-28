@@ -40,4 +40,7 @@ class WebCommand{
   static const String fchatreadMDthb="fchatreadMDthb";   //读取目录文件名称和路径
   static const String fchatreadMD="fchatreadMD";  //读取目录所有文件
 
+  static const String  getSha512key="getSha512key";  //向服务器获取临时key,主要用户app端发送优惠券数据验证
+
+
 }

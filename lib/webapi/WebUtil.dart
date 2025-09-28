@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../Util/JsonUtil.dart';
+import 'HttpWebApi.dart';
+import 'StripeUtil/WebPayUtil.dart';
+import 'WebCommand.dart';
 
 class WebUtil {
   static String city="";
@@ -137,4 +140,18 @@ class WebUtil {
     }
     return false;
   }
+
+  //向服务器说去对应数据哈希产生的临时key
+  static Future<Map> getSha512key(String sha512hash) async {
+    Map map={};
+    map.putIfAbsent("sha512", ()=>sha512hash);
+    Map<String, dynamic>sendmap = WebPayUtil.getDataMap(
+        map, WebCommand.getSha512key);
+    String rec = await WebPayUtil.httpFchatserver(sendmap);
+    RecObj recobj = RecObj(rec);
+    PhoneUtil.applog("返回服务器临时key内容${recobj.json}");
+    return recobj.json;
+  }
+
+
 }
