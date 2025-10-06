@@ -20,6 +20,16 @@ class DateUtil{
   static DateTime getinttodate(int dateint){
     return DateTime.fromMillisecondsSinceEpoch(dateint,isUtc: true);
   }
+  static String formatTimestamp(int timestampMillis) {
+    final date = DateTime.fromMillisecondsSinceEpoch(timestampMillis, isUtc: false);
+    return "${date.year.toString().padLeft(4, '0')}-"
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.day.toString().padLeft(2, '0')} "
+        "${date.hour.toString().padLeft(2, '0')}:"
+        "${date.minute.toString().padLeft(2, '0')}:"
+        "${date.second.toString().padLeft(2, '0')}";
+  }
+
 
   static Duration parseDuration(String s) {
     int hours = 0;

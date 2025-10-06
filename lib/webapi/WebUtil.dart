@@ -142,11 +142,11 @@ class WebUtil {
   }
 
   //向服务器说去对应数据哈希产生的临时key
-  static Future<Map> getSha512key(String sha512hash) async {
+  static Future<Map> getsendapptmpkey(String md5) async {
     Map map={};
-    map.putIfAbsent("sha512", ()=>sha512hash);
+    map.putIfAbsent("hash", ()=>md5);
     Map<String, dynamic>sendmap = WebPayUtil.getDataMap(
-        map, WebCommand.getSha512key);
+        map, WebCommand.sendapptmpkey);
     String rec = await WebPayUtil.httpFchatserver(sendmap);
     RecObj recobj = RecObj(rec);
     PhoneUtil.applog("返回服务器临时key内容${recobj.json}");

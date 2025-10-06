@@ -265,7 +265,7 @@ class FChatFileObj {
   Map<String, dynamic> _getdelMap(path) {
     Map<String, dynamic> map = {};
     map.putIfAbsent("userid", () => UserObj.userid);
-    map.putIfAbsent("command", () => WebCommand.delfile);
+    map.putIfAbsent("command", () => WebCommand.fchatdelfile);
     map.putIfAbsent("sapppath", () => path);
     return map;
   }
@@ -302,7 +302,7 @@ class FChatFileArrObj {
   Map<String, dynamic> _getReadmdthbMap(String md) {
     Map<String, dynamic> map = {};
     map.putIfAbsent("userid", () => UserObj.userid);
-    map.putIfAbsent("command", () => WebCommand.readMDthb);
+    map.putIfAbsent("command", () => WebCommand.fchatreadMDthb);
     map.putIfAbsent("sapppath", () => md);
     return map;
   }

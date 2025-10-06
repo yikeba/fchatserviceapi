@@ -6,7 +6,6 @@ import '../util/PhoneUtil.dart';
 class BaseJS{
   static StreamController<String> _fchatstream = StreamController.broadcast();
 
-
   static apiRecdatainit(){
 
     html.window.onMessage.listen((event) {
