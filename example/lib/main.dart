@@ -1,5 +1,6 @@
 import 'package:fchatapi/FChatApiSdk.dart';
 import 'package:fchatapi/appapi/PayObj.dart';
+import 'package:fchatapi/appapi/ScanApi.dart';
 import 'package:fchatapi/util/PhoneUtil.dart';
 import 'package:fchatapi/webapi/FileObj.dart';
 import 'package:fchatapi/webapi/StripeUtil/WebPayUtil.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: MyHomePage(),
     );
   }
@@ -221,10 +222,20 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: webpaytest,
               child: const Text("网页支付"),
             ),
+            ElevatedButton(
+              onPressed: scanQr,
+              child: const Text("扫二维码"),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  scanQr(){
+    Scanapi().scan((value){
+       PhoneUtil.applog("扫码返回内容$value");
+    });
   }
   webpaytest(){
      if(WebPayUtil.isLocCard()){

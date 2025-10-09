@@ -29,8 +29,7 @@ class DateUtil{
         "${date.minute.toString().padLeft(2, '0')}:"
         "${date.second.toString().padLeft(2, '0')}";
   }
-
-
+  
   static Duration parseDuration(String s) {
     int hours = 0;
     int minutes = 0;

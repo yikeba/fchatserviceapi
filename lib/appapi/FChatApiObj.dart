@@ -18,7 +18,8 @@ enum ApiName {
   order, //服务号订单
   voice,  //语音播放
   openUser,   //打开或关注用户,服务号
-  promoreceive,    //优惠券api接口，通过参数识别，读取，验证，核销
+  scan,      //调用app scan扫码
+  promoreceive,    //读取app端优惠券信息
   appport
 }
 
