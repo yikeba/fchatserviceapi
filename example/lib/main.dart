@@ -1,5 +1,7 @@
 import 'package:fchatapi/FChatApiSdk.dart';
+import 'package:fchatapi/appapi/GpsApi.dart';
 import 'package:fchatapi/appapi/PayObj.dart';
+import 'package:fchatapi/appapi/PromoObj.dart';
 import 'package:fchatapi/appapi/ScanApi.dart';
 import 'package:fchatapi/util/PhoneUtil.dart';
 import 'package:fchatapi/webapi/FileObj.dart';
@@ -226,10 +228,42 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: scanQr,
               child: const Text("扫二维码"),
             ),
+            ElevatedButton(
+              onPressed: (){
+                getgps("gps");
+              },
+              child: const Text("获取gps"),
+            ),
+            ElevatedButton(
+              onPressed: (){
+                getgps("map");
+              },
+              child: const Text("获取地图"),
+            ),
+            ElevatedButton(
+              onPressed: getPromo,
+              child: const Text("获取商户"),
+            ),
           ],
         ),
       ),
     );
+  }
+  getPromo(){
+    PromoApi().receive((value){
+      PhoneUtil.applog("获得服务号发行的优惠券$value");
+    });
+  }
+  getgps(String type){
+    if(type=="gps") {
+      GpsApi().getgps((value) {
+        PhoneUtil.applog("获取客户gps位置$value");
+      });
+    }else{
+      GpsApi().getMapgps((value) {
+        PhoneUtil.applog("获取地图显示，返沪籍gps$value");
+      });
+    }
   }
 
   scanQr(){
