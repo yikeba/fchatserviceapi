@@ -6,7 +6,6 @@ import 'package:fchatapi/util/Tools.dart';
 import 'package:fchatapi/util/UserObj.dart';
 import '../util/PhoneUtil.dart';
 
-
 enum ApiName {
   system,
   userinfo, //用户信息
@@ -21,6 +20,7 @@ enum ApiName {
   openUser,   //打开或关注用户,服务号
   scan,      //调用app scan扫码
   promoreceive,    //读取app端优惠券信息
+  promodel,    //删除本地优惠券
   appport
 }
 
