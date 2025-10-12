@@ -253,6 +253,16 @@ class _MyHomePageState extends State<MyHomePage> {
     PromoApi().receive((value){
       PhoneUtil.applog("获得服务号发行的优惠券$value");
     });
+    PromoApi().receiveObj((proobj){
+      PhoneUtil.applog("获得服务号发行的优惠券${proobj.toJson()}");
+      PromoApi papi=PromoApi();
+      papi.promObj=proobj;
+      papi.del((state){  //删除优惠券（核销优惠券）
+
+      });
+
+    });
+
   }
   getgps(String type){
     if(type=="gps") {
