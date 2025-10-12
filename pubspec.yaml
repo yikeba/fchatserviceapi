@@ -22,7 +22,7 @@ dependencies:
   dio: ^5.8.0
   intl: ^0.20.2
   quickalert: ^1.0.1   #弹出框
-  url_launcher: ^6.1.11
+  url_launcher: ^6.3.2
   path: ^1.8.3
   flutter_stripe: ^11.4.0  #付款支付插件，支持ios google masert visa
   flutter_stripe_web: ^6.4.0  #web版本

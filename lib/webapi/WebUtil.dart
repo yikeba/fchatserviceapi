@@ -1,4 +1,5 @@
 import 'package:fchatapi/Util/PhoneUtil.dart';
+import 'package:fchatapi/util/Tools.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -153,5 +154,9 @@ class WebUtil {
     return recobj.json;
   }
 
+  static openfchatweb(){
+    String _url="https://fchat.us/app/fchat?downapp";
+    Tools.openChrome(_url);
+  }
 
 }
