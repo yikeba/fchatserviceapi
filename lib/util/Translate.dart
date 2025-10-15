@@ -246,17 +246,13 @@ class Translate {
     }
     return arr;
   }
-
-
-
-
+  
 }
 
 
 class TitleMenuLanguage extends StatelessWidget {
-  void Function(String value) callback;
-  TitleMenuLanguage({Key? key,required this.callback})
-      : super(key: key);
+  final void Function(String value) callback;
+  const TitleMenuLanguage({super.key,required this.callback});
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+import 'package:fchatapi/appapi/LoginFChat.dart';
+
 class PayReturnObj{
   //支付回调对象，支付成功后通知服务器的后续处理，
   //1 想其他系统rueturn url 支付成功通知
@@ -6,6 +8,7 @@ class PayReturnObj{
   String locurl="";
   String apptag="";     //处理自己小程序标签业务逻辑
   String json="";  //附加内容数据
+
   //ChatMessage? mes;  //系统通知消息，将有999账户发出
   //ChatInfo?  chatmes;  //自定义回调消息，将自定义发送
 
@@ -15,8 +18,7 @@ class PayReturnObj{
     if(apptag.isNotEmpty) map.putIfAbsent("apptag", () => apptag);
     if(json.isNotEmpty) map.putIfAbsent("json", () => json);
     if(locurl.isNotEmpty) map.putIfAbsent("locurl", ()=>locurl);
-    // if(mes!=null) map.putIfAbsent("mes", () => mes!.getJson());
-    //if(chatmes!=null) map.putIfAbsent("chatmes", () => chatmes!.toString());
+    if(Loginfchat.pushobj!=null) map.putIfAbsent("push", ()=> Loginfchat.pushobj!.toJson());
     return map;
   }
 }

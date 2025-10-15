@@ -19,7 +19,7 @@ class ZtoApi {
         WebPayUtil.getDataMap(map, WebCommand.expresszto);
     String rec = await WebPayUtil.httpFchatserver(sendmap);
     RecObj robj = RecObj(rec);
-   //PhoneUtil.applog("快递返回情况${robj.json}");
+    //PhoneUtil.applog("快递返回情况${rec}");
     return robj.json;
   }
 
@@ -38,11 +38,11 @@ class ZtoApi {
   }
 
    //读取中通快递单轨迹数据
-  static Future<List<ZtoTrackObj>> fetchztoreadtrack(String customerNO) async {
+  static Future<List<ZtoTrackObj>> fetchztoreadtrack(String customerNo) async {
      List<ZtoTrackObj> arr=[];
-     if(customerNO.isEmpty) return arr;
+     if(customerNo.isEmpty) return arr;
      Map map={};
-     map.putIfAbsent("customerNO", () => customerNO);
+     map.putIfAbsent("customerNo", () => customerNo);
      List recstr=await ztoreadtrack(JsonUtil.maptostr(map));
      List recobj=[];
      for(String str in recstr){
@@ -127,7 +127,7 @@ class ZtoKHObj {
       return numA.compareTo(numB);
     });
     for (Map map in plist) {
-      String code=map["code"];
+      //String code=map["code"];
       String name = _cleanInput(_decodeBrokenUnicode(map["name"]));
      // PhoneUtil.applog("获得province省份名称$name,省级单位排序code$code");
       String nameen = "";
@@ -162,17 +162,6 @@ class ZtoKHObj {
       }
       //PhoneUtil.applog("---------------第一个省级单位读取完毕 ------------------");
     }
-   /* for (String province in provincelist) {
-      PhoneUtil.applog("---------------省级单位:$province ------------------");
-    }
-    PhoneUtil.applog("---------------省级单位结束------------------");
-    for (String province in citylist) {
-      PhoneUtil.applog("---------------市县单位:$province ------------------");
-    }
-    PhoneUtil.applog("---------------市县单位结束------------------");
-    for (String province in distlist) {
-      PhoneUtil.applog("---------------区级单位:$province ------------------");
-    }*/
   }
 
   String _decodeBrokenUnicode(String input) {

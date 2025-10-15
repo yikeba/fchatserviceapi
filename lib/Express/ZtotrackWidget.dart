@@ -44,7 +44,7 @@ class ExpressTimeline extends StatelessWidget {
               margin: const EdgeInsets.only(top: 4),
               width: 10,
               height: 10,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color:Colors.green ,
                 shape: BoxShape.circle,
               ),
@@ -52,9 +52,9 @@ class ExpressTimeline extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 12),
-        Expanded(
+        const Expanded(
           child: Padding(
-              padding: const EdgeInsets.only(bottom: 16),
+              padding: EdgeInsets.only(bottom: 16),
               child: Text("等待发货")
           ),
         ),

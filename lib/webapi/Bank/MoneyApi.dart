@@ -5,7 +5,7 @@ import '../WebCommand.dart';
 
 class MoneyApi{
   //订单资金读取
-  static Future<Map>  ordermoney() async {
+  static Future<Map> ordermoney() async {
     Map map={};
     map.putIfAbsent("action", ()=> "order");
     Map<String,dynamic>sendmap=WebPayUtil.getDataMap(map,WebCommand.moneymanagement);

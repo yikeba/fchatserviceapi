@@ -1,7 +1,6 @@
 import 'package:fchatapi/Express/ZtoApi.dart';
 import 'package:fchatapi/Util/JsonUtil.dart';
 import 'package:fchatapi/appapi/LoginFChat.dart';
-import 'package:fchatapi/appapi/OpenUser.dart';
 import 'package:fchatapi/util/PhoneUtil.dart';
 import 'package:fchatapi/util/Translate.dart';
 import 'package:fchatapi/util/UserObj.dart';
@@ -16,7 +15,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:path/path.dart';
 import 'WidgetUtil/AuthWidget.dart';
 import 'appapi/BaseJS.dart';
 
@@ -44,7 +42,6 @@ class FChatApiSdk {
     UserObj.userid = userid;
     UserObj.appname=appname;
     _readApiJson();
-    _readAddfchat();
     HttpWebApi.weblogin().then((value) {
       if (value.data == "loginok") {
         webcall(true);
@@ -75,14 +72,7 @@ class FChatApiSdk {
     PhoneUtil.applog("读取服务号默认客户群聊$griupid");
   }
 
-  static _readAddfchat() async {
-    try {
-      OpenUser.addchathtml = await rootBundle.loadString('packages/fchatapi/assets/json/addchat.html');
 
-    } catch (e) {
-      PhoneUtil.applog("中通配置地理位置字典文件读取失败: $e");
-    }
-  }
 
   static _readApiJson() async {
     try {

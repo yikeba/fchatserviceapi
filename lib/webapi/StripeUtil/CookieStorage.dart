@@ -3,7 +3,6 @@ import 'package:universal_html/html.dart' as html;
 
 class CookieStorage {
 
-
   static void saveToCookie(String name, String value) {
     html.window.localStorage[name] = value;
   }
