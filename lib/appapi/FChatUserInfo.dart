@@ -4,6 +4,7 @@ class FChatUserInfo{
   ApiObj? aobj;
 
   getUserInfo(void Function(String recdata) fchatsend){
+    aobj?.dispose();
     aobj=ApiObj(ApiName.userinfo,(value){
       fchatsend(value);
     });

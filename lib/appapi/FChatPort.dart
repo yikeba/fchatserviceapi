@@ -8,6 +8,7 @@ class FChatPort{
   ApiObj? aobj;
 
   send(void Function(String recdata) fchatsend){
+    aobj?.dispose();
     aobj=ApiObj(ApiName.appport,(value){
        PhoneUtil.applog("收到app返回的可以上下文件数据$value");
        fchatsend(value);

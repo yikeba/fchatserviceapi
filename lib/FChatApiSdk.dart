@@ -52,7 +52,7 @@ class FChatApiSdk {
         webcall(false);
       }
     });
-    BaseJS.apiRecdatainit();  //初始化app接口
+    //BaseJS.apiRecdatainit();  //初始化app接口
     Loginfchat().send((value){
        if(value=="err") value="";
        if(value.isEmpty) {

@@ -1,102 +1,115 @@
-
-import 'package:fchatapi/appapi/BaseJS.dart';
+import 'dart:async';
 import 'package:fchatapi/util/JsonUtil.dart';
 import 'package:fchatapi/util/SignUtil.dart';
 import 'package:fchatapi/util/Tools.dart';
 import 'package:fchatapi/util/UserObj.dart';
-import '../util/PhoneUtil.dart';
+import 'package:fchatapi/appapi/BaseJS.dart';
+
+import '../Util/PhoneUtil.dart';
+
+
 
 enum ApiName {
   system,
-  userinfo, //用户信息
-  pay, //支付调用
-  gps, //位置信息
-  map, //地图api
-  localstorage, //存储接口，客户端本地存储和s3
-  readstorage, //读取文件
+  userinfo,
+  pay,
+  gps,
+  map,
+  localstorage,
+  readstorage,
   sendurl,
-  order, //服务号订单
-  voice,  //语音播放
-  openUser,   //打开或关注用户,服务号
-  scan,      //调用app scan扫码
-  promoreceive,    //读取app端优惠券信息
-  promodel,    //删除本地优惠券
-  appport
+  order,
+  voice,
+  openUser,
+  scan,
+  promoreceive,
+  promodel,
+  appport,
 }
 
-class ApiObj{
-   ApiName apiname;
-   String actionid="";
-   String data="";
-   String sign="";
-   void Function(String)? recData;
-   ApiObj(this.apiname,this.recData){
-     actionid=Tools.generateRandomString(70);
-   }
-   setData(String data){
-     this.data=JsonUtil.getbase64(data);
-     sign=SignUtil.hmacSHA512(this.data, UserObj.token);
-     BaseJS.sendtoFChat(toString(),(value){
-         recaction(value);
-     });
-   }
+class ApiObj {
+  final ApiName apiname;
+  final String actionid;
+  String data = '';
+  String sign = '';
+  final void Function(String)? recData;
+  final BaseJS _bjs = BaseJS();
+  StreamSubscription<String>? _subscription;
 
-   recaction(String value){
-     if(value=="err"){
-       if(recData!=null)recData!("err");
-       return;
-     }
-     Map recmap=JsonUtil.strtoMap(value);
-     String fsgin="";
-     String fdata="";
-     String vdata="";
-     String fid="";
-     int code=-1;
-     //PhoneUtil.applog("API对象收到app返回数据，进行解析$recmap");
-     if(recmap.containsKey("code")){
-       code=recmap["code"];
-     }
-     if(recmap.containsKey("sign")){
-       fsgin=recmap["sign"];
-     }
-     if(recmap.containsKey("data")){
-       fdata=recmap["data"];
-       vdata=fdata;
-       vdata=JsonUtil.getbase64(vdata);
-     }
-     if(recmap.containsKey("id")){
-        fid=recmap["id"];
-     }
-     //{"code":200,"data":"e30=","sign":"1e19878b79083e3738ca801c9a289d87","api":"pay","id":"VjRQajMrCC8M74y99qcA4Bau7giitD3Ev2lft81I9S5C6eJdM8dKXBgAVy0XF7QWKYdbpF"}}
-     if(fid==actionid && code==200){  //核对操作id
-       bool isv= SignUtil.verifysha512(fdata,UserObj.token,fsgin);//验证签名
-       if(isv){
-         if(recData!=null){
-            recData!(vdata);
-         }else{
-           PhoneUtil.applog("回调接口为null,无法返回数据到主程序");
-         }
-       }else{
-         PhoneUtil.applog("验证签名错误$sign");
-         if(recData!=null)recData!("err");
-       }
-     }else{
-       PhoneUtil.applog("无法核对id$actionid");
-     }
-   }
+  ApiObj(this.apiname, this.recData) : actionid = Tools.generateRandomString(70) {
+    _bjs.init();
+  }
 
-   @override
-   String toString(){
-     return JsonUtil.maptostr(_getJSON());
-   }
+  Future<void> setData(String data) async {
+    this.data = JsonUtil.getbase64(data);
+    this.sign = SignUtil.hmacSHA512(this.data, UserObj.token);
 
-   _getJSON(){
-     Map map={};
-     map.putIfAbsent("api", ()=> apiname.name);
-     map.putIfAbsent("data", ()=> data);
-     map.putIfAbsent("sign", ()=> sign);
-     map.putIfAbsent("id", ()=>actionid);
-     map.putIfAbsent("userid", ()=> UserObj.userid);
-     return map;
-   }
+    // 取消之前的订阅
+    await _subscription?.cancel();
+
+    // 发送消息并保存订阅
+    _subscription = await _bjs.sendFChat(
+      json: toString(),
+      actionid: actionid,
+      onReceive: recaction,
+    );
+  }
+
+  void recaction(String value) {
+    if (value == 'err') {
+      recData?.call('err');
+      _subscription?.cancel();
+      return;
+    }
+
+    try {
+      final recmap = JsonUtil.strtoMap(value);
+      final code = recmap['code'] as int? ?? -1;
+      final fsign = recmap['sign'] as String? ?? '';
+      final fdata = recmap['data'] as String? ?? '';
+      final fid = recmap['id'] as String? ?? '';
+
+      //PhoneUtil.applog('ApiObj received data for actionid $actionid: $recmap');
+
+      if (fid == actionid && code == 200) {
+        final isValid = SignUtil.verifysha512(fdata, UserObj.token, fsign);
+        if (isValid) {
+          final vdata = JsonUtil.getbase64(fdata);
+          recData?.call(vdata);
+          _subscription?.cancel(); // 成功后取消订阅
+        } else {
+          //PhoneUtil.applog('Signature verification failed: $fsign');
+          recData?.call('err');
+          _subscription?.cancel();
+        }
+      } else {
+        //PhoneUtil.applog('Invalid action ID: expected $actionid, got $fid');
+        // 不触发 recData，等待正确消息
+      }
+    } catch (e) {
+     // PhoneUtil.applog('ApiObj error parsing response: $e, value: $value');
+      recData?.call('err');
+      _subscription?.cancel();
+    }
+  }
+
+  @override
+  String toString() {
+    return JsonUtil.maptostr(_getJSON());
+  }
+
+  Map<String, dynamic> _getJSON() {
+    return {
+      'api': apiname.name,
+      'data': data,
+      'sign': sign,
+      'id': actionid,
+      'userid': UserObj.userid,
+    };
+  }
+
+  void dispose() {
+    _subscription?.cancel();
+    PhoneUtil.applog('ApiObj disposed for actionid: $actionid');
+  }
 }

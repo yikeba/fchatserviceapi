@@ -1,6 +1,5 @@
 
 import 'package:fchatapi/Util/JsonUtil.dart';
-
 import '../Util/PhoneUtil.dart';
 import 'FChatApiObj.dart';
 
@@ -8,16 +7,22 @@ class PromoApi{
   ApiObj? aobj;
   PromObj? promObj;
   receive(void Function(String recdata) state){
+    aobj?.dispose();
     aobj=ApiObj(ApiName.promoreceive,(value){
-
       state(value);
     });
     aobj!.setData("");
   }
 
   //返回优惠券对象
-  receiveObj(void Function(PromObj prom) state){
+  receiveObj(void Function(PromObj? prom) state){
+    aobj?.dispose();
     aobj=ApiObj(ApiName.promoreceive,(value){
+      PhoneUtil.applog("获得优惠券$value");
+      if(value.isEmpty || value=="err") {
+        state(null);
+        return;
+      }
       PromObj p=PromObj.fromString(value);
       state(p);
     });
@@ -25,6 +30,7 @@ class PromoApi{
   }
 
   del(void Function(String recdata) state){
+    aobj?.dispose();
     if(promObj==null){
       state("err");
       return;

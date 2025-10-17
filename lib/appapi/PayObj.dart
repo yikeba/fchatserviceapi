@@ -10,6 +10,7 @@ class PayObj{
   int moneyint=0;
   ApiObj? aobj;
   pay(void Function(String recdata) fchatpay){
+    aobj?.dispose();
     if(amount.isEmpty) return;
     moneyint=JsonUtil.getmoneyint(amount);
     if(moneyint<0) return ;

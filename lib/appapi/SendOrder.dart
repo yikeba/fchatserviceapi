@@ -10,6 +10,7 @@ class Sendorder{
   Sendorder(this.payid,this.amount,this.description,this.url);
 
   send(void Function(String recdata) fchatsend){
+    aobj?.dispose();
     aobj=ApiObj(ApiName.order,(value){
       fchatsend(value);
     });

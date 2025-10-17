@@ -20,6 +20,7 @@ class OpenUser{
   BuildContext context;
   OpenUser(this.context,this.userid,this.name);
   openuser(void Function(String recdata) state){
+    aobj?.dispose();
     if(userid.isEmpty) return;
     if (FChatApiSdk.isFchatBrower) {
       this.userid = userid;
@@ -41,6 +42,7 @@ class OpenUser{
   }
 
   close(void Function(String recdata) state){
+    aobj?.dispose();
     if (FChatApiSdk.isFchatBrower) {
       aobj = ApiObj(ApiName.openUser, (value) {
         state(value);

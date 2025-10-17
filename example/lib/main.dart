@@ -242,8 +242,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
               onPressed: getPromo,
-              child: const Text("获取商户"),
+              child: const Text("获取优惠"),
             ),
+
           ],
         ),
       ),
@@ -251,9 +252,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   getPromo(){
     PromoApi().receive((value){
-      PhoneUtil.applog("获得服务号发行的优惠券$value");
+      PhoneUtil.applog("获得服务号发行的优惠券 str:$value");
     });
     PromoApi().receiveObj((proobj){
+      if(proobj==null){
+        PhoneUtil.applog("获得优惠券错误null");
+        return;
+      }
       PhoneUtil.applog("获得服务号发行的优惠券${proobj.toJson()}");
       PromoApi papi=PromoApi();
       papi.promObj=proobj;
@@ -271,7 +276,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }else{
       GpsApi().getMapgps((value) {
-        PhoneUtil.applog("获取地图显示，返沪籍gps$value");
+        PhoneUtil.applog("获取地图显示，返gps$value");
       });
     }
   }

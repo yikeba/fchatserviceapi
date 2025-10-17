@@ -6,6 +6,7 @@ class Loginfchat{
   ApiObj? aobj;
   static PushObj? pushobj;
   send(void Function(String recdata) fchatsend){
+    aobj?.dispose();
     aobj=ApiObj(ApiName.system,(value){
       fchatsend(value);
       Map recmap=JsonUtil.strtoMap(value);

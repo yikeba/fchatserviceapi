@@ -7,6 +7,7 @@ class Voicespeark{
   String text="";
   speark(String text,void Function(String recdata) fchatvoice){
     if(text.isEmpty) return;
+    aobj?.dispose();
     this.text=text;
     aobj=ApiObj(ApiName.voice,(value){
       if(value=="err")return;

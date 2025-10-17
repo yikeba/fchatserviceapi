@@ -1,81 +1,123 @@
-
+import 'dart:js_util' as js_util;
+import 'package:flutter/material.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:http/http.dart' as http;
-/// PDF 批量打印工具类（Flutter Web）
+import 'dart:js' as js;
+
 class PdfBatchPrinter {
-  /// 打印多个 PDF 链接（一次最多20个）
-  static Future<void> printBatch(List<String> urls) async {
+  /// 批量打印多个 PDF（支持UI进度）
+  static Future<void> printBatch(
+      BuildContext context,
+      List<String> urls, {
+        void Function(String message)? onProgress,
+      }) async {
     if (urls.isEmpty) {
       print("没有需要打印的PDF。");
       return;
     }
 
-    // 限制最大数量
     final limitedUrls = urls.take(20).toList();
     print("开始打印 ${limitedUrls.length} 个 PDF 文件...");
 
     for (int i = 0; i < limitedUrls.length; i++) {
       final url = limitedUrls[i];
-      print("准备打印第 ${i + 1}/${limitedUrls.length} 个：$url");
+      final msg = "正在打印第 ${i + 1}/${limitedUrls.length} 个文件...";
+      print(msg);
+      onProgress?.call(msg);
+
+      _showLoadingDialog(context, msg);
 
       await _printSinglePdf(url);
 
-      // 等待2秒，避免浏览器阻塞或打印冲突
-      await Future.delayed(const Duration(seconds: 2));
+      // 关闭等待框
+      Navigator.of(context, rootNavigator: true).pop();
+
+      await Future.delayed(const Duration(seconds: 1));
     }
 
-    print("✅ 所有PDF已提交打印任务。");
+    print("✅ 所有PDF已打印完成。");
+    onProgress?.call("✅ 所有PDF已打印完成");
   }
 
-  /// 打印单个 PDF 链接
+  static void printDirectly(String pdfUrl) {
+    // 打开一个新窗口显示 PDF（必须同步执行）
+    final newWindow = html.window.open(pdfUrl, '_blank');
+
+    // 延迟 1 秒等待 PDF 加载（根据文件大小可调整）
+    Future.delayed(const Duration(seconds: 1), () {
+      try {
+        // 使用 JS 调用打印（必须直接操作新窗口）
+        js.context.callMethod('eval', [
+          'var w = window.open("$pdfUrl"); setTimeout(() => { w.print(); }, 1000);'
+        ]);
+      } catch (e) {
+        print("打印调用失败: $e");
+      }
+    });
+  }
+
+  /// 打印单个 PDF（解决 .focus/.print 报红问题）
   static Future<void> _printSinglePdf(String url) async {
     final iframe = html.IFrameElement()
       ..src = url
       ..style.display = 'none';
 
     html.document.body?.append(iframe);
-    await iframe.onLoad.first;
-    final dynamic win = iframe.contentWindow;
-    win?.focus();
-    win?.print();
 
-    // 打印完成后延迟删除 iframe，避免崩溃
+    await iframe.onLoad.first;
+
+    final win = iframe.contentWindow;
+    if (win != null) {
+      // 通过 JS 调用 focus() 与 print()
+      await js_util.promiseToFuture(js_util.callMethod(win, 'focus', []));
+      await js_util.promiseToFuture(js_util.callMethod(win, 'print', []));
+    }
+
+    // 延迟删除 iframe
     Future.delayed(const Duration(seconds: 3), () {
       iframe.remove();
     });
   }
 
-  static Future<void> openPdfFromUrl(String pdfUrl) async {
-    try {
-      // 下载 PDF 内容
-      final response = await http.get(Uri.parse(pdfUrl));
-      if (response.statusCode == 200) {
-        final bytes = response.bodyBytes;
-
-        // 生成 Blob 对象
-        final blob = html.Blob([bytes], 'application/pdf');
-
-        // 生成临时 URL
-        final url = html.Url.createObjectUrlFromBlob(blob);
-
-        // 打开新标签页预览 PDF
-        html.window.open(url, '_blank');
-
-        // 延迟释放 URL
-        Future.delayed(const Duration(seconds: 5), () {
-          html.Url.revokeObjectUrl(url);
-        });
-      } else {
-        print('下载 PDF 失败: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('打开 PDF 出错: $e');
-    }
+  /// 显示加载框
+  static void _showLoadingDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black54,
+      builder: (_) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(width: 20),
+              Flexible(child: Text(message, style: const TextStyle(fontSize: 16))),
+            ],
+          ),
+        ),
+      ),
+    );
   }
-
 }
 
 
+class PdfPrinter {
+  static void printDirectly(String pdfUrl) {
+    // 打开一个新窗口显示 PDF（必须同步执行）
+    final newWindow = html.window.open(pdfUrl, '_blank');
 
-
-
+    // 延迟 1 秒等待 PDF 加载（根据文件大小可调整）
+    Future.delayed(const Duration(seconds: 1), () {
+      try {
+        // 使用 JS 调用打印（必须直接操作新窗口）
+        js.context.callMethod('eval', [
+          'var w = window.open("$pdfUrl"); setTimeout(() => { w.print(); }, 1000);'
+        ]);
+      } catch (e) {
+        print("打印调用失败: $e");
+      }
+    });
+  }
+}

@@ -11,6 +11,7 @@ class ServiceUrl{
   String image="";
   ServiceUrl(this.url,this.title);
   send(void Function(String recdata) fchatsend){
+    aobj?.dispose();
     if(url.isEmpty) return;
     aobj=ApiObj(ApiName.sendurl,(value){
       fchatsend(value);
