@@ -13,7 +13,7 @@ class PdfBatchPrinter {
           .post(
         uri,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'url': pdfUrl}),
+        body: jsonEncode({'data': pdfUrl}),
       )
           .timeout(const Duration(seconds: 3));
 
@@ -29,4 +29,5 @@ class PdfBatchPrinter {
       return false;
     }
   }
+
 }
