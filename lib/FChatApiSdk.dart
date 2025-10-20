@@ -16,7 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'WidgetUtil/AuthWidget.dart';
-import 'appapi/BaseJS.dart';
+
 
 // 顶部
 import 'src/web/WebFirebaseEnv_stub.dart'

@@ -20,16 +20,16 @@ class WebUItools{
 
   static openWebpay(BuildContext context,Widget? order,PayHtmlObj? pobjhtml,{islive=false}) async {
     //打开插件支付
-    if(pobjhtml !=null){
-       if(pobjhtml.probj==null && Loginfchat.pushobj!=null){
+   /* if(pobjhtml !=null){
+      pobjhtml.probj ?? PayReturnObj();
+      *//* if(pobjhtml.probj==null){
          pobjhtml.probj=PayReturnObj();
-       }
-    }
+       }*//*
+    }*/
     if(FChatApiSdk.isFchatBrower && pobjhtml!=null){
       PayObj fchatpay=PayObj();
       fchatpay.amount=pobjhtml.money;
       fchatpay.paytext=pobjhtml.paystr;
-
       fchatpay.pay((value){
         Map recmap=JsonUtil.strtoMap(value);
         String payid=recmap["payid"];

@@ -18,7 +18,6 @@ class PayReturnObj{
     if(apptag.isNotEmpty) map.putIfAbsent("apptag", () => apptag);
     if(json.isNotEmpty) map.putIfAbsent("json", () => json);
     if(locurl.isNotEmpty) map.putIfAbsent("locurl", ()=>locurl);
-    if(Loginfchat.pushobj!=null) map.putIfAbsent("push", ()=> Loginfchat.pushobj!.toJson());
     return map;
   }
 }

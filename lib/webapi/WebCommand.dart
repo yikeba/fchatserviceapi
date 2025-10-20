@@ -41,6 +41,6 @@ class WebCommand{
   static const String fchatreadMD="fchatreadMD";  //读取目录所有文件
 
   static const String sendapptmpkey="sendapptmpkey"; //发送app生成的临时密钥5分钟有效
-
+  static const String pushOrder="pushOrder";   //订单push 广播机制,
 
 }

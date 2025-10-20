@@ -13,7 +13,9 @@ class PayObj{
     aobj?.dispose();
     if(amount.isEmpty) return;
     moneyint=JsonUtil.getmoneyint(amount);
+    PhoneUtil.applog("支付金额转换为:$moneyint");
     if(moneyint<0) return ;
+    PhoneUtil.applog("开始进行app支付调起");
     aobj=ApiObj(ApiName.pay,(value){
       if(value=="err"){
          PhoneUtil.applog("环境不在FChat,吊起本地app");

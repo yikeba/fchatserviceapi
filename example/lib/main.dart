@@ -1,10 +1,14 @@
 import 'package:fchatapi/FChatApiSdk.dart';
 import 'package:fchatapi/appapi/GpsApi.dart';
+import 'package:fchatapi/appapi/LoginFChat.dart';
 import 'package:fchatapi/appapi/PayObj.dart';
 import 'package:fchatapi/appapi/PromoObj.dart';
 import 'package:fchatapi/appapi/ScanApi.dart';
 import 'package:fchatapi/util/PhoneUtil.dart';
 import 'package:fchatapi/webapi/FileObj.dart';
+import 'package:fchatapi/webapi/PushOrder/PrintObj.dart';
+import 'package:fchatapi/webapi/PushOrder/PushOrderObj.dart';
+import 'package:fchatapi/webapi/PushOrder/PushUtil.dart';
 import 'package:fchatapi/webapi/StripeUtil/WebPayUtil.dart';
 import 'package:fchatapi/webapi/WebUItools.dart';
 import 'package:file_picker/file_picker.dart';
@@ -52,7 +56,9 @@ class _MyHomePageState extends State<MyHomePage> {
     token = dotenv.get('token');
     FChatApiSdk.init(userid, token, (webstate) {
       PhoneUtil.applog("fchat web api 返回状态$webstate");
-    }, (appstate) {});
+    }, (appstate) {
+      PhoneUtil.applog("app login  返回状态$appstate");
+    });
   }
 
   String? selectedFileName;
@@ -244,12 +250,48 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: getPromo,
               child: const Text("获取优惠"),
             ),
-
+            const ElevatedButton(
+              onPressed: creatPrintOrderObjDemo,
+              child: Text("创建打印小票订单"),
+            ),
+            const ElevatedButton(
+              onPressed: creatpushDemo,
+              child: Text("创建消息推送机制"),
+            ),
           ],
         ),
       ),
     );
   }
+  static Future<PrintOrderObj> creatPrintOrderObjDemo() async {
+    // 英文订单(支持，中文，日文，英文)
+    return PrintOrderObj(
+      title: "Test Order",
+      items: ["Milk x2  \$4.00", "Bread x1  \$2.50"],
+      total: "total: \$6.50",
+      message: "Please provide an extra set of tableware", // 无留言
+      logoBase64: "",   //图片base64
+      qrLink: "fchat.us/app/fchat?downapp", // 无二维码
+      languageType: PrintLanguageType.en,
+    );
+  }
+
+  static Future<void> creatpushDemo() async {
+      PrintOrderObj printobj=await creatPrintOrderObjDemo();
+      PushOrderObj pushOrderObj=PushOrderObj(
+         "4765223",
+         "4444444",
+         "payid",    //实际支付订单id
+         "data",     //商户或用户的自行业务逻辑数据（建议不超过1k）
+      );
+      pushOrderObj.tts="你有一个新的订单，请及时处理";  //自定义语音提示播放(可选)
+      pushOrderObj.printOrder=printobj;   //自定义打印小票（可选）
+      PushUtil.creatPushOrder(pushOrderObj);  //创建并发送
+
+  }
+
+
+
   getPromo(){
     PromoApi().receive((value){
       PhoneUtil.applog("获得服务号发行的优惠券 str:$value");

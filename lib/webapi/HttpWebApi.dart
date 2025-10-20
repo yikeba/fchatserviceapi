@@ -96,12 +96,6 @@ class HttpWebApi {
     map.putIfAbsent("sign", () => sign);
     return map;
   }
- /* static weblogin() async {
-    // Map map=await  _weblogin();
-    // PhoneUtil.applog("申请向服务器认证，返回$map");
-     bool islogin=await LoginVerify().loginAndVerify() ;
-     PhoneUtil.applog("登录验证返回$islogin");
-  }*/
 
   static Future<RecObj> weblogin() async {
     try {

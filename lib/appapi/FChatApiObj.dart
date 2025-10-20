@@ -44,11 +44,10 @@ class ApiObj {
   Future<void> setData(String data) async {
     this.data = JsonUtil.getbase64(data);
     this.sign = SignUtil.hmacSHA512(this.data, UserObj.token);
-
     // 取消之前的订阅
     await _subscription?.cancel();
-
     // 发送消息并保存订阅
+    PhoneUtil.applog("setdata to fChat app ${toString()}");
     _subscription = await _bjs.sendFChat(
       json: toString(),
       actionid: actionid,
