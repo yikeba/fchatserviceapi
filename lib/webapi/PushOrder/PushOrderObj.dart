@@ -8,12 +8,16 @@ class PushOrderObj {
   String data;                // 必须
   String payid;               // 必须 payid 验证是否有支付订单，没有支付订单或支付订单验证失败push 无效
   //同一个payid 支付订单最多支持push 5次，超过5次返回失败
-  PushOrderObj(this.senduserid,this.recuserid, this.payid, this.data, {this.tts, this.printOrder});
+  String title;
+  String body;
+  PushOrderObj(this.senduserid,this.recuserid, this.title,this.body,this.payid, this.data, {this.tts, this.printOrder});
 
   factory PushOrderObj.fromJson(Map<String, dynamic> json) {
     return PushOrderObj(
       json['senduserid'] ?? '',
       json['recuserid'] ?? '',
+      json['title'] ?? "",
+      json['body'] ?? "",
       json['payid'] ?? '',
       json['data'] ?? '',
       tts: json['tts'],
@@ -28,6 +32,8 @@ class PushOrderObj {
       'senduserid': senduserid,
       'recuserid': recuserid,
       'payid': payid,
+      'title':title,
+      'body':body,
       'data': data,
     };
     if (tts != null) json['tts'] = tts;

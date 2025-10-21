@@ -14,7 +14,7 @@ class PushUtil{
         map, WebCommand.pushOrder);
     String rec = await WebPayUtil.httpFchatserver(sendmap);
     RecObj recobj = RecObj(rec);
-    PhoneUtil.applog("push 推送返回${recobj.json}");
+    PhoneUtil.applog("push 推送返回$rec");
     return recobj.json;
   }
 

@@ -286,10 +286,12 @@ class _MyHomePageState extends State<MyHomePage> {
       PushOrderObj pushOrderObj=PushOrderObj(
          "4765223",
          "1564043",
+         '熊猫餐厅订单通知',
+         '你的咖啡与商务套餐已经制作完毕，编号801,用餐愉快',
          Tools.generateRandomString(20),    //实际支付订单id
-         "app json merchant data",     //商户或用户的自行业务逻辑数据（建议不超过1k）
+         "app json merchant data--json data",     //商户或用户的自行业务逻辑数据（建议不超过1k）
       );
-      pushOrderObj.tts="你有一个新的订单，李先生外卖功夫熊猫套餐，10美元，请及时处理";  //自定义语音提示播放(可选)
+      pushOrderObj.tts="你有一个新的订单，李先生外卖功夫熊猫套餐，10美元，咖啡商务套餐请及时处理";  //自定义语音提示播放(可选)
       pushOrderObj.printOrder=printobj;   //自定义打印小票（可选）
       PushUtil.creatPushOrder(pushOrderObj);  //创建并发送
   }
