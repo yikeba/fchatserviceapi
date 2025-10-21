@@ -3,28 +3,28 @@ import 'dart:html' as html;
 import 'dart:js' as js;
 import '../util/PhoneUtil.dart';
 
-class BaseJSObj {
-  static final StreamController<String> _fchatstreamobj = StreamController.broadcast();
+import 'dart:html' as html;
+import 'dart:async';
 
-  static void apiRecdatainit() {
+class FChatBridge {
+  static final StreamController<String> _incomingStream = StreamController.broadcast();
+  static Stream<String> get onMessage => _incomingStream.stream;
+  static void init() {
     html.window.onMessage.listen((event) {
       final message = event.data;
       try {
-        _fchatstreamobj.add(message["data"]);
+        if (message is Map && message['type'] == 'AppToFlutter') {
+          final data = message['data'];
+          if (data is String) {
+            _incomingStream.add(data);
+          }
+        }
       } catch (e) {
-        PhoneUtil.applog("Fchat api err $e, message$message");
+        print("FChatBridge error: $e");
       }
     });
   }
 
-  static Future<StreamSubscription<String>> sendtoFChat(
-      String json, void Function(String recdata) fchatrec) async {
-    await js.context.callMethod("sendtoFChat", [json]);
-    // 返回一个订阅对象，调用者可以手动管理
-    return _fchatstreamobj.stream.listen((value) {
-      fchatrec(value);
-    });
-  }
 }
 
 
@@ -51,7 +51,6 @@ class BaseJS {
       try {
         if (message != null && message.containsKey('data') && message['data'] is String) {
           _fchatStream.add(message['data']);
-          //PhoneUtil.applog('BaseJS received message data: ${message['data']}');
         } else {
           //PhoneUtil.applog('BaseJS invalid message format: $message');
         }

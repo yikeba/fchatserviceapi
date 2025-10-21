@@ -1,10 +1,12 @@
 import 'package:fchatapi/FChatApiSdk.dart';
+import 'package:fchatapi/appapi/BaseJS.dart';
 import 'package:fchatapi/appapi/GpsApi.dart';
 import 'package:fchatapi/appapi/LoginFChat.dart';
 import 'package:fchatapi/appapi/PayObj.dart';
 import 'package:fchatapi/appapi/PromoObj.dart';
 import 'package:fchatapi/appapi/ScanApi.dart';
 import 'package:fchatapi/util/PhoneUtil.dart';
+import 'package:fchatapi/util/Tools.dart';
 import 'package:fchatapi/webapi/FileObj.dart';
 import 'package:fchatapi/webapi/PushOrder/PrintObj.dart';
 import 'package:fchatapi/webapi/PushOrder/PushOrderObj.dart';
@@ -47,6 +49,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     initload();
+    FChatBridge.onMessage.listen((msg) {
+      PhoneUtil.applog("💬 来自 fChat app JS 的消息: $msg");
+    });
   }
 
   String userid="";
@@ -280,14 +285,13 @@ class _MyHomePageState extends State<MyHomePage> {
       PrintOrderObj printobj=await creatPrintOrderObjDemo();
       PushOrderObj pushOrderObj=PushOrderObj(
          "4765223",
-         "4444444",
-         "payid",    //实际支付订单id
-         "data",     //商户或用户的自行业务逻辑数据（建议不超过1k）
+         "1564043",
+         Tools.generateRandomString(20),    //实际支付订单id
+         "app json merchant data",     //商户或用户的自行业务逻辑数据（建议不超过1k）
       );
-      pushOrderObj.tts="你有一个新的订单，请及时处理";  //自定义语音提示播放(可选)
+      pushOrderObj.tts="你有一个新的订单，李先生外卖功夫熊猫套餐，10美元，请及时处理";  //自定义语音提示播放(可选)
       pushOrderObj.printOrder=printobj;   //自定义打印小票（可选）
       PushUtil.creatPushOrder(pushOrderObj);  //创建并发送
-
   }
 
 

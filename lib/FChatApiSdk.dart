@@ -19,6 +19,7 @@ import 'WidgetUtil/AuthWidget.dart';
 
 
 // 顶部
+import 'appapi/BaseJS.dart';
 import 'src/web/WebFirebaseEnv_stub.dart'
 if (dart.library.html) 'src/web/WebFirebaseEnv.dart';
 
@@ -52,13 +53,12 @@ class FChatApiSdk {
         webcall(false);
       }
     });
-    //BaseJS.apiRecdatainit();  //初始化app接口
+
     Loginfchat().send((value){
        if(value=="err") value="";
        if(value.isEmpty) {
          appcall(false);
        } else{
-
          appcall(true);
        }
        isFchatBrower=value.isNotEmpty ? true : false;
