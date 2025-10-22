@@ -7,24 +7,20 @@ import 'dart:html' as html;
 import 'dart:async';
 
 class FChatBridge {
-  static final StreamController<String> _incomingStream = StreamController.broadcast();
+  static final StreamController<String> _incomingStream = StreamController<String>.broadcast();
+  /// 接收来自 App 的消息流
   static Stream<String> get onMessage => _incomingStream.stream;
+  /// 初始化桥接
   static void init() {
-    html.window.onMessage.listen((event) {
-      final message = event.data;
-      try {
-        if (message is Map && message['type'] == 'AppToFlutter') {
-          final data = message['data'];
-          if (data is String) {
-            _incomingStream.add(data);
-          }
-        }
-      } catch (e) {
-        print("FChatBridge error: $e");
-      }
+    // 监听自定义事件 FChatMessage
+    html.window.addEventListener('FChatMessage', (event) {
+      final customEvent = event as html.CustomEvent;
+      final message = customEvent.detail.toString();
+      PhoneUtil.applog("收到 App 消息: $message");
+      _incomingStream.add(message);
     });
+    PhoneUtil.applog("FChatBridge 初始化完成");
   }
-
 }
 
 

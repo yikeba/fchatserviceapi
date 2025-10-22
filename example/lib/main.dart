@@ -52,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     initload();
+    FChatBridge.init();
     FChatBridge.onMessage.listen((msg) {
       PhoneUtil.applog("💬 来自 fChat app JS 的消息: $msg");
     });
