@@ -30,7 +30,7 @@ class PushOrderObj {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = {
       'senduserid': senduserid,
-      'recuserid': recuser,
+      'recuser': recuser,
       'payid': payid,
       'title':title,
       'body':body,
