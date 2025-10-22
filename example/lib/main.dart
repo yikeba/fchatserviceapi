@@ -3,6 +3,7 @@ import 'package:fchatapi/appapi/BaseJS.dart';
 import 'package:fchatapi/appapi/GpsApi.dart';
 import 'package:fchatapi/appapi/LoginFChat.dart';
 import 'package:fchatapi/appapi/PayObj.dart';
+import 'package:fchatapi/appapi/PrintOrderApi.dart';
 import 'package:fchatapi/appapi/PromoObj.dart';
 import 'package:fchatapi/appapi/ScanApi.dart';
 import 'package:fchatapi/util/PhoneUtil.dart';
@@ -268,9 +269,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-  static Future<PrintOrderObj> creatPrintOrderObjDemo() async {
+  static Future<void> creatPrintOrderObjDemo() async {
     // 英文订单(支持，中文，日文，英文)
-    return PrintOrderObj(
+     PrintOrderObj neworder=PrintOrderObj(
       title: "Test Order",
       items: ["Milk x2  \$4.00", "Bread x1  \$2.50"],
       total: "total: \$6.50",
@@ -279,10 +280,22 @@ class _MyHomePageState extends State<MyHomePage> {
       qrLink: "fchat.us/app/fchat?downapp", // 无二维码
       languageType: PrintLanguageType.en,
     );
+     PrintOrderApi(neworder).print((value){
+       print("app打印端返回$value");
+     });
+
   }
 
   static Future<void> creatpushDemo() async {
-      PrintOrderObj printobj=await creatPrintOrderObjDemo();
+    PrintOrderObj neworder=PrintOrderObj(
+      title: "Test Order",
+      items: ["Milk x2  \$4.00", "Bread x1  \$2.50"],
+      total: "total: \$6.50",
+      message: "Please provide an extra set of tableware", // 无留言
+      logoBase64: "",   //图片base64
+      qrLink: "fchat.us/app/fchat?downapp", // 无二维码
+      languageType: PrintLanguageType.en,
+    );
       PushOrderObj pushOrderObj=PushOrderObj(
          "4765223",
          "1564043",
@@ -292,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
          "app json merchant data--json data",     //商户或用户的自行业务逻辑数据（建议不超过1k）
       );
       pushOrderObj.tts="你有一个新的订单，李先生外卖功夫熊猫套餐，10美元，咖啡商务套餐请及时处理";  //自定义语音提示播放(可选)
-      pushOrderObj.printOrder=printobj;   //自定义打印小票（可选）
+      pushOrderObj.printOrder=neworder;   //自定义打印小票（可选）
       PushUtil.creatPushOrder(pushOrderObj);  //创建并发送
   }
 

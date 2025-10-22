@@ -1,6 +1,6 @@
 name: fchatapi
 description: "fchatapi"
-version: 0.4.0
+version: 0.5.0
 homepage: "fchat.us"
 
 environment:

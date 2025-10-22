@@ -1,4 +1,6 @@
 
+import 'package:fchatapi/Util/JsonUtil.dart';
+
 import '../../util/MediaUtil.dart';
 
 enum PrintLanguageType {
@@ -35,6 +37,10 @@ class PrintOrderObj {
         return logoBase64;
     }
 
+    @override
+    toString(){
+        return JsonUtil.maptostr(toJson());
+    }
     /// ================================
     /// JSON 序列化
     /// ================================
