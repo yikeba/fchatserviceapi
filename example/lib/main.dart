@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:fchatapi/FChatApiSdk.dart';
 import 'package:fchatapi/appapi/BaseJS.dart';
 import 'package:fchatapi/appapi/GpsApi.dart';
-import 'package:fchatapi/appapi/LoginFChat.dart';
+import 'package:http/http.dart' as http;
 import 'package:fchatapi/appapi/PayObj.dart';
 import 'package:fchatapi/appapi/PrintOrderApi.dart';
 import 'package:fchatapi/appapi/PromoObj.dart';
@@ -200,71 +202,113 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('FChat Api'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Wrap(
+          spacing: 12.0, // 按钮之间的水平间距
+          runSpacing: 12.0, // 行之间的垂直间距
+          alignment: WrapAlignment.start,
           children: [
-            ElevatedButton(
-              onPressed: pickFile,
-              child: const Text("选择Pick a File"),
-            ),
-            ElevatedButton(
-              onPressed: pickImage,
-              child: const Text("选择图片文件"),
-            ),
-            ElevatedButton(
-              onPressed: readmd,
-              child: const Text("读取文件目录"),
-            ),
-            ElevatedButton(
-              onPressed: readmdthb,
-              child: const Text("读取文件列表"),
-            ),
-            ElevatedButton(
-              onPressed: readmdthbinfo,
-              child: const Text("读取文件列表信息"),
-            ),
-            ElevatedButton(
-              onPressed: delfile,
-              child: const Text("删除文件"),
-            ),
-            ElevatedButton(
-              onPressed: paytest,
-              child: const Text("app支付"),
-            ),
-            ElevatedButton(
-              onPressed: webpaytest,
-              child: const Text("网页支付"),
-            ),
-            ElevatedButton(
-              onPressed: scanQr,
-              child: const Text("扫二维码"),
-            ),
-            ElevatedButton(
-              onPressed: (){
-                getgps("gps");
-              },
-              child: const Text("获取gps"),
-            ),
-            ElevatedButton(
-              onPressed: (){
-                getgps("map");
-              },
-              child: const Text("获取地图"),
-            ),
-            ElevatedButton(
-              onPressed: getPromo,
-              child: const Text("获取优惠"),
-            ),
-            const ElevatedButton(
-              onPressed: creatPrintOrderObjDemo,
-              child: Text("创建打印小票订单"),
-            ),
-            const ElevatedButton(
-              onPressed: creatpushDemo,
-              child: Text("创建消息推送机制"),
-            ),
+            _buildButton('选择文件', pickFile),
+            _buildButton('选择图片', pickImage),
+            _buildButton('读取目录', readmd),
+
+            _buildButton('读取列表', readmdthb),
+            _buildButton('列表信息', readmdthbinfo),
+            _buildButton('删除文件', delfile),
+
+            _buildButton('App支付', paytest),
+            _buildButton('网页支付', webpaytest),
+            _buildButton('扫二维码', scanQr),
+
+            _buildButton('获取GPS', () => getgps("gps")),
+            _buildButton('获取地图', () => getgps("map")),
+            _buildButton('获取优惠', getPromo),
+
+            _buildButton('打印订单', creatPrintOrderObjDemo),
+            _buildButton('消息推送', creatpushDemo),
+            _buildButton('打开grab', openGrabFromWeb)
           ],
+        ),
+      ),
+    );
+  }
+
+  // 🔍 反向地理编码 - 免费版（无需API Key）
+  Future<String> _reverseGeocode(String lat, String lng) async {
+    try {
+      // 使用免费的 Nominatim 服务
+      final url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lng&addressdetails=1&accept-language=zh";
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'User-Agent': 'MyApp/1.0'}, // Nominatim 必须有 User-Agent
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['display_name'] != null) {
+          return data['display_name'];
+        }
+      }
+    } catch (e) {
+      print("地理编码失败: $e");
+    }
+
+    // ❌ 失败时返回你的预定义地址
+    if (lat == "11.3588653") {
+      return "奥林匹克体育场, 金边, 柬埔寨";
+    } else if (lat == "11.521379") {
+      return "金边市中心, 金边, 柬埔寨";
+    }
+
+    return "未知位置";
+  }
+
+
+  Future<void> openGrabFromWeb() async {
+    const pickupLat = "11.521379";
+    const pickupLng = "104.912914";
+    const destLat = "11.3588653";
+    const destLng = "104.9309222";
+
+    const grabUrl = "grab://open?screenType=BOOKING&pickup=$pickupLat,$pickupLng&dropoff=$destLat,$destLng";
+    const grabIOSUrl = grabUrl;
+    const grabWebsite = "https://www.grab.com/";
+
+    final userAgent = html.window.navigator.userAgent.toLowerCase();
+    String address= await _reverseGeocode(destLat,destLng);
+    Tools.showSnackbar(context, "定位地址$address");
+    Tools.Copytext(context, address);
+
+    if (userAgent.contains("android")) {
+      // ✅ Android 尝试直接打开 Grab
+      html.window.location.href = grabUrl;
+    } else if (userAgent.contains("iphone") ||
+        userAgent.contains("ipad") ||
+        userAgent.contains("macintosh")) {
+      // 🍎 iOS 受限，只能跳 App Store
+      html.window.location.href = grabIOSUrl;
+    } else {
+      // 💻 其他平台跳 Grab 官网
+      html.window.location.href = grabWebsite;
+    }
+  }
+
+
+// 抽取按钮的公共方法
+  Widget _buildButton(String text, VoidCallback onPressed) {
+    return SizedBox(
+      width: (MediaQuery.of(context).size.width - 48) / 3 - 12, // 3列布局，减去padding和spacing
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+        ),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 12),
         ),
       ),
     );
@@ -296,9 +340,10 @@ class _MyHomePageState extends State<MyHomePage> {
       qrLink: "fchat.us/app/fchat?downapp", // 无二维码
       languageType: PrintLanguageType.en,
     );
+    List<String> userarr=['1564043'];
       PushOrderObj pushOrderObj=PushOrderObj(
          "4765223",
-         "1564043",
+          userarr,
          '熊猫餐厅订单通知',
          '你的咖啡与商务套餐已经制作完毕，编号801,用餐愉快',
          Tools.generateRandomString(20),    //实际支付订单id

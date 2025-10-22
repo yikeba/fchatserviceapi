@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:fchatapi/FChatApiSdk.dart';
 import 'package:fchatapi/util/Tools.dart';
 import 'package:fchatapi/util/UserObj.dart';
-import 'package:fchatapi/webapi/LoginVerfiy.dart';
 import 'package:fchatapi/webapi/WebCommand.dart';
 import 'package:flutter/foundation.dart';
 import '../util/JsonUtil.dart';
