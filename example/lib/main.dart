@@ -341,7 +341,7 @@ class _MyHomePageState extends State<MyHomePage> {
       qrLink: "fchat.us/app/fchat?downapp", // 无二维码
       languageType: PrintLanguageType.en,
     );
-    List<String> userarr=['1564043'];
+    List<String> userarr=['6498124','4444444'];
       PushOrderObj pushOrderObj=PushOrderObj(
          "4765223",
           userarr,

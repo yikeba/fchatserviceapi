@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'PrintObj.dart';
 
 class PushOrderObj {
@@ -28,6 +30,10 @@ class PushOrderObj {
   }
 
   Map<String, dynamic> toJson() {
+    String debug="";
+    if(kDebugMode){
+      debug="debug";
+    }
     final Map<String, dynamic> json = {
       'senduserid': senduserid,
       'recuser': recuser,
@@ -35,6 +41,7 @@ class PushOrderObj {
       'title':title,
       'body':body,
       'data': data,
+      'debug': debug,
     };
     if (tts != null) json['tts'] = tts;
     if (printOrder != null) json['printOrder'] = printOrder!.toJson();
