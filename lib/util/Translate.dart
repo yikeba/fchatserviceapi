@@ -60,7 +60,6 @@ class Translate {
 
   static show(String str) {
     if (str.isEmpty) {
-      //PhoneUtil.applog("没有翻译内容");
       return "";
     }
     String lang = language;
@@ -84,6 +83,7 @@ class Translate {
         }
       }
     }
+
     try {
       translator.translate(str, from: "auto", to: lang).then((result) {
         String value = result.text;
@@ -91,7 +91,7 @@ class Translate {
         map.putIfAbsent(lang, () => value);
         map.putIfAbsent("md5", () => md5);
         translateList.add(map);
-        PhoneUtil.applog("翻译标签内容$str返回内容$value,to语言$lang");
+        //PhoneUtil.applog("翻译标签内容$str返回内容$value,to语言$lang");
         saveloctra();
       }).catchError((e) {
         PhoneUtil.applog("catch err翻译错误${e.toString()}");

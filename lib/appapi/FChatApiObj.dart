@@ -7,8 +7,6 @@ import 'package:fchatapi/appapi/BaseJS.dart';
 
 import '../Util/PhoneUtil.dart';
 
-
-
 enum ApiName {
   system,
   userinfo,
@@ -26,7 +24,8 @@ enum ApiName {
   promodel,
   appport,
   printOrder,
-
+  notification,
+  translate
 }
 
 class ApiObj {
