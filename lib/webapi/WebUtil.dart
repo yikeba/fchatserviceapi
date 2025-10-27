@@ -150,7 +150,7 @@ class WebUtil {
         map, WebCommand.sendapptmpkey);
     String rec = await WebPayUtil.httpFchatserver(sendmap);
     RecObj recobj = RecObj(rec);
-    PhoneUtil.applog("返回服务器临时key内容${recobj.json}");
+    //PhoneUtil.applog("返回服务器临时key内容${recobj.json}");
     return recobj.json;
   }
 

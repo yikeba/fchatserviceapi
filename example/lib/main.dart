@@ -334,14 +334,14 @@ class _MyHomePageState extends State<MyHomePage> {
   static Future<void> creatpushDemo() async {
     PrintOrderObj neworder=PrintOrderObj(
       title: "Test Order",
-      items: ["Milk x2  \$4.00", "Bread x1  \$2.50"],
+      items: ["牛奶 x2  \$4.00", "Bread x1  \$2.50"],
       total: "total: \$6.50",
-      message: "Please provide an extra set of tableware", // 无留言
+      message: "Please provide an extra set of tableware,明天会更好", // 无留言
       logoBase64: "",   //图片base64
-      qrLink: "fchat.us/app/fchat?downapp", // 无二维码
+      qrLink: "https://fchat.us/app/fchat?downapp", // 无二维码
       languageType: PrintLanguageType.en,
     );
-    List<String> userarr=['6498124','4444444'];
+    List<String> userarr=['1564043'];
       PushOrderObj pushOrderObj=PushOrderObj(
          "4765223",
           userarr,

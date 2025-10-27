@@ -39,9 +39,8 @@ class AWSEmail {
     Map<String, dynamic> sendmap = WebPayUtil.getDataMap(
         _map, WebCommand.email);
     String rec = await WebPayUtil.httpFchatserver(sendmap);
-    RecObj robj = RecObj(rec);
-    PhoneUtil.applog("邮件发送返回${robj.data}");
-    if (robj.data == "ok") {
+    PhoneUtil.applog("邮件发送返回${rec}");
+    if (rec == "ok") {
       return true;
     }
     return false;
