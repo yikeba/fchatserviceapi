@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:fchatapi/FChatApiSdk.dart';
 import 'package:fchatapi/appapi/BaseJS.dart';
 import 'package:fchatapi/appapi/GpsApi.dart';
+import 'package:fchatapi/appapi/NotificationApi.dart';
+import 'package:fchatapi/appapi/TranslateApi.dart';
 import 'package:http/http.dart' as http;
 import 'package:fchatapi/appapi/PayObj.dart';
 import 'package:fchatapi/appapi/PrintOrderApi.dart';
@@ -193,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
     pay.amount="0.05";
     pay.paytext="测试支付";
     pay.pay((value){
-       print("app 支付返回结果$value");
+      print("app 支付返回结果$value");
     });
   }
 
@@ -316,7 +318,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   static Future<void> creatPrintOrderObjDemo() async {
     // 英文订单(支持，中文，日文，英文)
-     PrintOrderObj neworder=PrintOrderObj(
+    PrintOrderObj neworder=PrintOrderObj(
       title: "Test Order",
       items: ["Milk x2  \$4.00", "Bread x1  \$2.50"],
       total: "total: \$6.50",
@@ -325,9 +327,9 @@ class _MyHomePageState extends State<MyHomePage> {
       qrLink: "fchat.us/app/fchat?downapp", // 无二维码
       languageType: PrintLanguageType.en,
     );
-     PrintOrderApi(neworder).print((value){
-       print("app打印端返回$value");
-     });
+    PrintOrderApi(neworder).print((value){
+      print("app打印端返回$value");
+    });
 
   }
 
@@ -342,17 +344,17 @@ class _MyHomePageState extends State<MyHomePage> {
       languageType: PrintLanguageType.en,
     );
     List<String> userarr=['1564043'];
-      PushOrderObj pushOrderObj=PushOrderObj(
-         "4765223",
-          userarr,
-         '熊猫餐厅订单通知',
-         '你的咖啡与商务套餐已经制作完毕，编号801,用餐愉快',
-         Tools.generateRandomString(20),    //实际支付订单id
-         "app json merchant data--json data",     //商户或用户的自行业务逻辑数据（建议不超过1k）
-      );
-      pushOrderObj.tts="你有一个新的订单，李先生外卖功夫熊猫套餐，10美元，咖啡商务套餐请及时处理";  //自定义语音提示播放(可选)
-      pushOrderObj.printOrder=neworder;   //自定义打印小票（可选）
-      PushUtil.creatPushOrder(pushOrderObj);  //创建并发送
+    PushOrderObj pushOrderObj=PushOrderObj(
+      "4765223",
+      userarr,
+      '熊猫餐厅订单通知',
+      '你的咖啡与商务套餐已经制作完毕，编号801,用餐愉快',
+      Tools.generateRandomString(20),    //实际支付订单id
+      "app json merchant data--json data",     //商户或用户的自行业务逻辑数据（建议不超过1k）
+    );
+    pushOrderObj.tts="你有一个新的订单，李先生外卖功夫熊猫套餐，10美元，咖啡商务套餐请及时处理";  //自定义语音提示播放(可选)
+    pushOrderObj.printOrder=neworder;   //自定义打印小票（可选）
+    PushUtil.creatPushOrder(pushOrderObj);  //创建并发送
   }
 
 
@@ -381,23 +383,49 @@ class _MyHomePageState extends State<MyHomePage> {
       GpsApi().getgps((value) {
         PhoneUtil.applog("获取客户gps位置$value");
       });
-    }else{
+    }else {
       GpsApi().getMapgps((value) {
         PhoneUtil.applog("获取地图显示，返gps$value");
       });
     }
+    GpsApi().showMapgps(11.34234,105.3432,(value) {
+      PhoneUtil.applog("获取地图显示，返gps$value");
+    });
   }
+
+  sendnotification(String title,String body){
+    if(FChatApiSdk.isFchatBrower) {
+      NotificationApi(title, body).send((value) {
+        PhoneUtil.applog("返回通知是否成功：$value");
+      });
+    }else{
+      Tools.showSnackbar(context, "需要在app 环境下执行发送通知");
+    }
+  }
+
+  gettraanslate(String str){
+    //这个翻译是启用app的第二代翻译类，所有翻译将放到服务器进行缓存，当新客户需要翻译就是app直接返回结果
+    //同步效果会好于第一代翻译
+    if(FChatApiSdk.isFchatBrower) {
+      TranslateApi(str).send((value) {
+        PhoneUtil.applog("返回翻译结果：$value");
+      });
+    }else{
+      Tools.showSnackbar(context, "需要在app 环境下完成翻译");
+    }
+  }
+
 
   scanQr(){
     Scanapi().scan((value){
-       PhoneUtil.applog("扫码返回内容$value");
+      PhoneUtil.applog("扫码返回内容$value");
     });
   }
   webpaytest(){
-     if(WebPayUtil.isLocCard()){
-       WebUItools.opencardlist(context,null,null);
-     }else {
-       WebUItools.openWebpay(context,null,null);
-     }
+    if(WebPayUtil.isLocCard()){
+      WebUItools.opencardlist(context,null,null);
+    }else {
+      WebUItools.openWebpay(context,null,null);
+    }
   }
 }

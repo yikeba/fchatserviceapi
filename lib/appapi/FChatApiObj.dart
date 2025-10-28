@@ -13,6 +13,7 @@ enum ApiName {
   pay,
   gps,
   map,
+  showmap,
   localstorage,
   readstorage,
   sendurl,

@@ -1,3 +1,5 @@
+import 'package:fchatapi/Util/JsonUtil.dart';
+
 import '../Util/PhoneUtil.dart';
 import 'FChatApiObj.dart';
 
@@ -25,6 +27,20 @@ class GpsApi {
       state(value);
     });
     await _mapApiObj!.setData("");
+  }
+
+  // 获取地图 GPS 位置
+  Future<void> showMapgps(double lat, double lng,void Function(String recdata) state) async {
+    // 如果已有地图请求，先清理
+    _mapApiObj?.dispose();
+    // 创建新的 ApiObj 实例
+    _mapApiObj = ApiObj(ApiName.map, (value) {
+      state(value);
+    });
+    Map map={};
+    map["lat"]=lat;
+    map["lng"]=lng;
+    await _mapApiObj!.setData(JsonUtil.maptostr(map));
   }
 
   // 清理所有 ApiObj 实例

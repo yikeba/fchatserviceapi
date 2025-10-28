@@ -14,8 +14,4 @@ class PrintOrderApi{
     aobj!.setData(printOrderObj.toString());
   }
 
-
-
-
-
 }
