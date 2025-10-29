@@ -63,7 +63,7 @@ class HttpWebApi {
       String url="${FChatApiSdk.debughost}:8080/sappbox";
       return url;
     } else {
-      return "${FChatApiSdk.host}sapp";
+      return "${FChatApiSdk.fchathost}sapp";
     }
   }
 
@@ -73,7 +73,7 @@ class HttpWebApi {
       return _getBaseUrl(html.window.location.href);
     } else {
       PhoneUtil.applog("返回url路径:${html.window.location.href}");
-      return FChatApiSdk.host+"app/${UserObj.userid}/";
+      return "${FChatApiSdk.fchathost}app/${UserObj.userid}/";
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:fchatapi/util/Tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quickalert/models/quickalert_type.dart';
@@ -270,6 +271,32 @@ class QuickAlertShow {
           Navigator.pop(context);
         });
   }
+
+  static Future<String> showCopyinfo(BuildContext context, String title, String text) async {
+    return await QuickAlert.show(
+        context: context,
+        type: QuickAlertType.confirm,
+        confirmBtnText: '继续',
+        cancelBtnText: '取消',
+        title: title,
+        widget: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(text),
+            SizedBox(width: 5,),
+            IconButton(onPressed: (){
+              Tools.Copytext(context, text);
+            }, icon: Icon(Icons.copy_outlined))
+          ],),
+        onConfirmBtnTap: () async {
+          Navigator.of(context).pop("ok");
+        },
+        onCancelBtnTap: () {
+          Navigator.of(context).pop("cancel");
+        });
+  }
+
 
   static showphonesave(BuildContext context) async {
     String message = "";

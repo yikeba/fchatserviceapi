@@ -34,7 +34,7 @@ class LoginVerify {
   Future<bool> loginAndVerify() async {
     try {
       // 第一步：获取服务器的 RSA 公钥和 hmacSalt
-      String url = "${FChatApiSdk.host}applogin";
+      String url = "${FChatApiSdk.fchathost}applogin";
       String authHeader = 'Bearer ${WebCommand.sapplogin}'; // 设置 Bearer Token
       Map<String,dynamic> sendmmap=HttpWebApi.logindata();
       FormData senddata = FormData.fromMap(sendmmap);
@@ -75,7 +75,7 @@ class LoginVerify {
 
       // 第二步：发送认证请求，Dio 自动附带 Cookie
       final verifyResp = await dio.post(
-        '${FChatApiSdk.host}sappToken',
+        '${FChatApiSdk.fchathost}sappToken',
         options: Options(
           headers: {
             "Content-Type": "application/json",

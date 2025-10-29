@@ -26,7 +26,8 @@ enum ApiName {
   appport,
   printOrder,
   notification,
-  translate
+  translate,
+  readtranslate,
 }
 
 class ApiObj {

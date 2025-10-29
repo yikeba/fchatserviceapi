@@ -26,6 +26,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker_web/image_picker_web.dart';
 import 'package:universal_html/html.dart' as html;
 
+import 'WebApp/WebPage/ShortUrl.dart';
+
 void main() async {
   await dotenv.load();
   runApp(const MyApp());
@@ -226,15 +228,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
             _buildButton('获取GPS', () => getgps("gps")),
             _buildButton('获取地图', () => getgps("map")),
+            _buildButton('web地图', () => getgps("map")),
+
             _buildButton('获取优惠', getPromo),
 
             _buildButton('打印订单', creatPrintOrderObjDemo),
             _buildButton('消息推送', creatpushDemo),
+            _buildButton('短连接', creatShortUrl),
+            _buildButton('翻译数据', readTra),
             _buildButton('打开grab', openGrabFromWeb)
           ],
         ),
       ),
     );
+  }
+
+  readTra(){
+     TranslateApi("").read((value){
+        PhoneUtil.applog("读取app翻译数据,返回$value");
+     });
+  }
+
+  creatShortUrl() async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) {
+      return const ShortLinkGenerator();
+    }));
   }
 
   // 🔍 反向地理编码 - 免费版（无需API Key）
@@ -388,9 +409,9 @@ class _MyHomePageState extends State<MyHomePage> {
         PhoneUtil.applog("获取地图显示，返gps$value");
       });
     }
-    GpsApi().showMapgps(11.34234,105.3432,(value) {
+  /*  GpsApi().showMapgps(11.34234,105.3432,(value) {
       PhoneUtil.applog("获取地图显示，返gps$value");
-    });
+    });*/
   }
 
   sendnotification(String title,String body){

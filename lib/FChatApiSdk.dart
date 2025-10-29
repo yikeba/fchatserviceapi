@@ -30,14 +30,14 @@ class FChatApiSdk {
   static String griupid="";  //默认客户群聊
   static CardArr loccard=CardArr();
   static bool isFchatBrower=false;  //是否在fchat app中运行
-  static String host="https://fchat.us/";
+  static String fchathost="https://fchat.us/";
   static String debughost="http://fchat.us";
 
   static init(String userid, String token, void Function(bool state) webcall,
       void Function(bool state) appcall,{String appname=""})  async {
     WidgetsFlutterBinding.ensureInitialized();
     initenv();
-    PhoneUtil.applog("链接域名$host  调试域名$debughost");
+    //PhoneUtil.applog("链接域名$host  调试域名$debughost");
     Translate.initTra();
     UserObj.token = token;
     UserObj.userid = userid;

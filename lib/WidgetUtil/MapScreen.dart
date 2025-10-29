@@ -189,7 +189,7 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
       );
     }
     // 更新地址对象
-    PhoneUtil.applog("加载地址到联系对象信息:$_address");
+    //PhoneUtil.applog("加载地址到联系对象信息:$_address");
     faddress = FChatAddress.dart(widget.position ?? Position(
         latitude: _selectedLocation.latitude,
         longitude: _selectedLocation.longitude,
