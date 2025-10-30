@@ -100,6 +100,8 @@ class ApiObj {
     return JsonUtil.maptostr(_getJSON());
   }
 
+  toJson()=> _getJSON();
+
   Map<String, dynamic> _getJSON() {
     return {
       'api': apiname.name,
