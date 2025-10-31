@@ -365,8 +365,10 @@ class _MyHomePageState extends State<MyHomePage> {
       languageType: PrintLanguageType.en,
     );
     List<String> userarr=['1564043'];
+
     PushOrderObj pushOrderObj=PushOrderObj(
-      "4765223",
+      '1112111',   //服务号id
+      "1112111",
       userarr,
       '熊猫餐厅订单通知',
       '你的咖啡与商务套餐已经制作完毕，编号801,用餐愉快',

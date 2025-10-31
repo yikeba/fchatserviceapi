@@ -5,6 +5,7 @@ import 'PrintObj.dart';
 class PushOrderObj {
   PrintOrderObj? printOrder;  // 可选
   String? tts;                // 可选
+  String merchantid;
   List<String> recuser;           // 必须 接受push 服务号/客户id，会限制为至少userobj.userid或客户id
   String senduserid;          //必须  发送push 服务号/客户id，会限制为至少userobj.userid或客户id
   String data;                // 必须
@@ -12,10 +13,11 @@ class PushOrderObj {
   //同一个payid 支付订单最多支持push 5次，超过5次返回失败
   String title;
   String body;
-  PushOrderObj(this.senduserid,this.recuser, this.title,this.body,this.payid, this.data, {this.tts, this.printOrder});
+  PushOrderObj(this.merchantid,this.senduserid,this.recuser, this.title,this.body,this.payid, this.data, {this.tts, this.printOrder});
 
   factory PushOrderObj.fromJson(Map<String, dynamic> json) {
     return PushOrderObj(
+      json['merchantid'] ?? '',
       json['senduserid'] ?? '',
       json['recuser'] ?? [],
       json['title'] ?? "",
@@ -35,6 +37,7 @@ class PushOrderObj {
       debug="debug";
     }
     final Map<String, dynamic> json = {
+      'merchantid': merchantid,
       'senduserid': senduserid,
       'recuser': recuser,
       'payid': payid,
