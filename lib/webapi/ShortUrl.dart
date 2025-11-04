@@ -6,8 +6,6 @@ import 'WebCommand.dart';
 
 class ShortUrl{
 
-
-
   static Future<Map> creatShortUrl(ServiceUrl serverurl) async {
     Map map=serverurl.toJson();
     Map<String, dynamic>sendmap = WebPayUtil.getDataMap(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fchatapi/FChatApiSdk.dart';
+import 'package:fchatapi/Util/JsonUtil.dart';
 import 'package:fchatapi/appapi/BaseJS.dart';
 import 'package:fchatapi/appapi/GpsApi.dart';
 import 'package:fchatapi/appapi/NotificationApi.dart';
@@ -348,8 +349,13 @@ class _MyHomePageState extends State<MyHomePage> {
       qrLink: "fchat.us/app/fchat?downapp", // 无二维码
       languageType: PrintLanguageType.en,
     );
-    PrintOrderApi(neworder).print((value){
-      print("app打印端返回$value");
+    PrintOrderApi(neworder).print((state){
+       if(state==PrintStatus.Complete){
+         print("打印成功");
+       }else{
+          print("打印错误");
+       }
+
     });
 
   }
