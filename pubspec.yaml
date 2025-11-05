@@ -31,7 +31,7 @@ dependencies:
   language_picker: ^0.4.5
   encrypt: ^5.0.3   #加密，解密
   flutter_credit_card: ^4.0.1  #检查信用卡合法性,输入ui
-
+  esc_pos_utils_plus: ^2.0.0   #pos 标准打印工具
   geolocator: ^14.0.2   #gps定位插件
   qr_flutter: ^4.1.0  #显示二维码
   flutter_map: ^7.0.2 #免费地图

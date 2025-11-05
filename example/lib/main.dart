@@ -340,35 +340,63 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   static Future<void> creatPrintOrderObjDemo() async {
     // 英文订单(支持，中文，日文，英文)
-    PrintOrderObj neworder=PrintOrderObj(
+    // 英文订单（堂食）
+    PrintOrderObj nowdorder= PrintOrderObj(
       title: "Test Order",
       items: ["Milk x2  \$4.00", "Bread x1  \$2.50"],
-      total: "total: \$6.50",
-      message: "Please provide an extra set of tableware", // 无留言
-      logoBase64: "",   //图片base64
-      qrLink: "fchat.us/app/fchat?downapp", // 无二维码
+      total: "Total: \$6.50",
+      message: "Please provide an extra set of tableware",
+      logoBase64: "",
+      qrLink: "https://fchat.us/app/fchat?downapp",
       languageType: PrintLanguageType.en,
+      orderType: OrderType.dineIn,
+      takeoutAddress: null,
+      orderId: 'ORD-EN-001',
+      dateTime: '2025-11-05 22:04',
+      storeName: 'Delicious Restaurant',
+      storeAddress: '123 Food Street, Chaoyang District, Beijing',
+      tableNumber: 'B02',
+      customerName: null,
+      phoneNumber: null,
+      paymentMethod: 'Credit Card',
+      taxAmount: 'Tax: \$0.50',
+      discount: null,
+      serverName: 'John',
+      thanksMessage: 'Thank you for dining with us!',
     );
-    PrintOrderApi(neworder).print((state){
+    PrintOrderApi(nowdorder).print((state){
        if(state==PrintStatus.Complete){
          print("打印成功");
        }else{
           print("打印错误");
        }
-
     });
 
   }
 
   static Future<void> creatpushDemo() async {
-    PrintOrderObj neworder=PrintOrderObj(
+    PrintOrderObj nowdorder= PrintOrderObj(
       title: "Test Order",
-      items: ["牛奶 x2  \$4.00", "Bread x1  \$2.50"],
-      total: "total: \$6.50",
-      message: "Please provide an extra set of tableware,明天会更好", // 无留言
-      logoBase64: "",   //图片base64
-      qrLink: "https://fchat.us/app/fchat?downapp", // 无二维码
+      items: ["Milk x2  \$4.00", "Bread x1  \$2.50"],
+      total: "Total: \$6.50",
+      message: "Please provide an extra set of tableware",
+      logoBase64: "",
+      qrLink: "https://fchat.us/app/fchat?downapp",  //案例，还是位置的https
       languageType: PrintLanguageType.en,
+      orderType: OrderType.dineIn,
+      takeoutAddress: null,
+      orderId: 'ORD-EN-001',
+      dateTime: '2025-11-05 22:04',
+      storeName: 'Delicious Restaurant',
+      storeAddress: '123 Food Street, Chaoyang District, Beijing',  //外卖打印
+      tableNumber: 'B02',
+      customerName: "李先生",
+      phoneNumber: "09615423",   //外卖打印
+      paymentMethod: '',  //暂时不答应，下一步做付款方式回调
+      taxAmount: '',   //税费，暂时不答应
+      discount: null,
+      serverName: 'John',
+      thanksMessage: 'Thank you for dining with us!',
     );
     List<String> userarr=['1564043'];
 
@@ -382,7 +410,7 @@ class _MyHomePageState extends State<MyHomePage> {
       "app json merchant data--json data",     //商户或用户的自行业务逻辑数据（建议不超过1k）
     );
     pushOrderObj.tts="你有一个新的订单，李先生外卖功夫熊猫套餐，10美元，咖啡商务套餐请及时处理";  //自定义语音提示播放(可选)
-    pushOrderObj.printOrder=neworder;   //自定义打印小票（可选）
+    pushOrderObj.printOrder=nowdorder;   //自定义打印小票（可选）
     PushUtil.creatPushOrder(pushOrderObj);  //创建并发送
   }
 
