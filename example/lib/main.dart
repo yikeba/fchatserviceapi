@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:fchatapi/FChatApiSdk.dart';
 import 'package:fchatapi/Util/JsonUtil.dart';
 import 'package:fchatapi/appapi/BaseJS.dart';
+import 'package:fchatapi/appapi/FChatUserInfo.dart';
 import 'package:fchatapi/appapi/GpsApi.dart';
 import 'package:fchatapi/appapi/NotificationApi.dart';
 import 'package:fchatapi/appapi/TranslateApi.dart';
+import 'package:fchatapi/webapi/ChatUserobj.dart';
 import 'package:http/http.dart' as http;
 import 'package:fchatapi/appapi/PayObj.dart';
 import 'package:fchatapi/appapi/PrintOrderApi.dart';
@@ -27,6 +29,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker_web/image_picker_web.dart';
 import 'package:universal_html/html.dart' as html;
 
+import 'Meet/EnrollmentForm.dart';
 import 'WebApp/WebPage/ShortUrl.dart';
 
 void main() async {
@@ -237,11 +240,32 @@ class _MyHomePageState extends State<MyHomePage> {
             _buildButton('消息推送', creatpushDemo),
             _buildButton('短连接', creatShortUrl),
             _buildButton('翻译数据', readTra),
-            _buildButton('打开grab', openGrabFromWeb)
+            _buildButton('打开grab', openGrabFromWeb),
+            _buildButton('用户widget', userwidget),
+            _buildButton('报名类', meettype)
+
           ],
         ),
       ),
     );
+  }
+
+  userwidget(){
+     FChatUserInfo().getUserInfo((user){
+        PhoneUtil.applog("读取app 使用账户信息${user.toString()}");
+        //直接使用用户widget
+        Widget uimg= user.chatuser!.getavatar(width: 50,height: 50,radius: 15);
+     });
+  }
+
+  meettype() async {
+    await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>Scaffold(
+          appBar: AppBar(title: const Text('报名页面')),
+          body: const SingleChildScrollView(
+            child: EnrollmentForm(),  // 直接使用
+          ),
+        ))); // 直接使用;
   }
 
   readTra(){

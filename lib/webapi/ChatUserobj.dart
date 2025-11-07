@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:fchatapi/Util/PhoneUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,12 +27,12 @@ class ChatUser extends UserBase {
   String? fullname;
   String souname = ""; //当用户备注名称，souname显示原来的名字
   String? avatarURL;
-  Uint8List? imgbyte;
+  String? base64;
   File? imgfile;
   bool topstate = false; //是否置顶状态
   Map map = {}; //不能final
   Color? usercolor;
-  ChatUser({required this.id, this.username, this.fullname, required avatarURL});
+  ChatUser({required this.id, this.username, this.fullname, required this.avatarURL});
 
 
   @override
@@ -44,8 +45,6 @@ class ChatUser extends UserBase {
     username = name;
   }
 
-
-
   Widget getavatar(
       {double width = 45, double height = 45, double radius = 10}) {
     if (avatarURL!.contains("assets")) {
@@ -55,12 +54,31 @@ class ChatUser extends UserBase {
               width: width, height: height, fit: BoxFit.cover));
       return w;
     }
-    if (imgbyte != null) {
-      Widget w = ClipRRect(
-          borderRadius: BorderRadius.circular(radius), //弧度
-          child: Image.memory(imgbyte!,
-              width: width, height: height, fit: BoxFit.cover));
-      return w;
+    // 在你的方法中（假设这是头像加载逻辑的一部分）
+    if (base64 != null && base64!.isNotEmpty) {
+      try {
+        // 将 base64 字符串解码为 Uint8List（图片字节数据）
+        Uint8List imgBytes = base64Decode(base64!);
+        PhoneUtil.applog("Base64 图片解码成功，大小: ${imgBytes.length} bytes");
+        Widget w = ClipRRect(
+          borderRadius: BorderRadius.circular(radius), // 弧度
+          child: Image.memory(
+            imgBytes,  // 使用解码后的 bytes
+            width: width,
+            height: height,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              PhoneUtil.applog("Base64 图片显示错误: $error");
+              return getStrchatuserimg(Size(width, height));
+            },
+          ),
+        );
+        return w;
+      } catch (e) {
+        // 处理解码失败（如无效 base64）
+        PhoneUtil.applog("Base64 解码失败: $e");
+        return getStrchatuserimg(Size(width, height));
+      }
     }
     if (avatarURL!.contains("http")) {
       Widget w = ClipRRect(
@@ -93,23 +111,6 @@ class ChatUser extends UserBase {
     return JsonUtil.maptostr(getJson());
   }
 
-  Widget getavatarUrl({double width = 45, double height = 45, double radius = 10,double fontsize=0}) {
-    if (avatarURL!.contains("assets")) {
-      Widget w = ClipRRect(
-          borderRadius: BorderRadius.circular(radius), //弧度
-          child: Image.asset(avatarURL!,
-              width: width, height: height, fit: BoxFit.cover));
-      return w;
-    }
-    Uint8List? byte = imgbyte;
-    if (byte != null) {
-      return ClipRRect(
-          borderRadius: BorderRadius.circular(radius), //弧度
-          child: Image.memory(byte,
-              width: width, height: height, fit: BoxFit.cover));
-    }
-    return getStrchatuserimg(Size(width, height), fontsize: fontsize);
-  }
 
   getStrchatuserimg(Size size,{double fontsize=0}) {
     username ?? "";
@@ -159,21 +160,8 @@ class ChatUserobj {
   Map _usermap = {};
   String key = "";
   String type = ChatUserUtil.chatUser;
-  String pass = "";
-  String paypass = "";
-  bool tcplogin = false; //登录状态
-  int messageid = 0;
-  int maxmessageid = 0;
-  String privatekey = "";
-  List groupuser = [];
-  List groupmain = [];
-  String groupmainuser = "";
-  String imgmd5 = "";
-  String inviteCode = "";
-  String token = "";
   String nicename = "";
-
-  String dyobj="";
+  String base64="";
   ChatUserobj(String userid, String name, String imgurl, this.type) {
     chatuser = ChatUser(id: userid, username: name, avatarURL: null);
     _usermap.putIfAbsent("id", () => userid);
@@ -184,22 +172,12 @@ class ChatUserobj {
 
 
   ChatUserobj.withNameAndAge(Map map) {
-    dyobj="from map";
     setUsermap(map);
   }
 
   setUsermap(Map map) {
     _usermap = map;
     String userid = "";
-    // PhoneUtil.applog("用户信息解析$map");
-    if (map.containsKey("key")) {
-      key = map["key"];
-      //PhoneUtil.applog("用户map key value:$key");
-    }
-
-    if (map.containsKey("paypass")) {
-      paypass = map["paypass"];
-    }
     if (map.containsKey("userid")) userid = map["userid"];
     if (map.containsKey("id")) userid = map["id"];
     String name = "";
@@ -209,39 +187,22 @@ class ChatUserobj {
     if (map.containsKey("username")) {
       name = map["username"];
     }
-    String? imgurl = "";
-    if (map.containsKey("imgurl")) {
-      imgurl = map["imgurl"];
+    if(map.containsKey("base64")){
+      base64=map["base64"];
+      PhoneUtil.applog("读取到用户头像base64长度：${base64.length}");
     }
+    String? imgurl = "";
     if (map.containsKey("avatarURL")) {
       imgurl = map["avatarURL"];
+      PhoneUtil.applog("读取到用户头像http$imgurl");
     }
     if (map.containsKey("type")) {
       type = map["type"];
     } else {
       type = ChatUserUtil.chatUser;
     }
-    if (map.containsKey("groupmainuser")) {
-      groupmainuser = map["groupmainuser"];
-    }
-    if (map.containsKey("img")) {
-      imgmd5 = map["img"];
-    }
-    if (map.containsKey("inviteCode")) {
-      inviteCode = map["inviteCode"];
-    }
-    if (map.containsKey("token")) {
-      token = map["token"];
-    }
-    //PhoneUtil.applog("对象名称$name");
-    if (name.isEmpty) {
-      //PhoneUtil.applog("对象名称空，对象id$userid,什么东西没有userid$map");
-    }
-    //if(userid=="1564043"){
-    //PhoneUtil.applog("社交对象头像初始化:$imgurl,来源$dyobj");
-    //}
-    chatuser = ChatUser(id: userid, username: name, avatarURL: null);
-    if (map.containsKey("pass")) pass = map["pass"];
+    chatuser = ChatUser(id: userid, username: name, avatarURL: imgurl);
+
     if (map.containsKey("nicename")) {
       nicename = map["nicename"];
       if (nicename.isNotEmpty) {
@@ -273,44 +234,8 @@ class ChatUserobj {
     String chatstr = chatuser!.toString();
     usermap = JsonUtil.strtoMap(chatstr);
     usermap.putIfAbsent("userid", () => chatuser!.id);
-    //PhoneUtil.pclog("用户对象userimg读取消息所以记录:$messageid");
-    usermap.putIfAbsent("messageid", () => messageid);
     usermap.putIfAbsent("type", () => type);
-    usermap.putIfAbsent("pass", () => pass);
-    //usermap.putIfAbsent("img", () => imgmd5);
-    //usermap.putIfAbsent("imgurl", () => chatuser!.avatarURL);
-    //usermap.putIfAbsent("type", () => type);
-    usermap.putIfAbsent("key", () => key);
-    //usermap.putIfAbsent("inviteCode", () => inviteCode);
-    //usermap.putIfAbsent("token", () => token);
-    // if(serviceobj!=null) usermap.putIfAbsent("serviceobj", () => serviceobj.toString());
-    if(nicename.isNotEmpty)usermap.putIfAbsent("nicename", () => nicename);
-    usermap.putIfAbsent("maxmessageid", () => maxmessageid);
-    if (kDebugMode || kProfileMode) usermap.putIfAbsent("debug", () => "debug");
-    if (privatekey.isNotEmpty) usermap.putIfAbsent("privatekey", () => privatekey);
-    if (groupuser.isNotEmpty) usermap.putIfAbsent("groupuser", () => groupgetJson(groupuser));
-    if (groupmain.isNotEmpty) usermap.putIfAbsent("groupmain", () => groupgetJson(groupmain));
-    if (groupmainuser.isNotEmpty) usermap.putIfAbsent("groupmainuser", () => groupmainuser);
-    return usermap;
-  }
 
-
-  getMessageidJson(int mesid) {
-    Map usermap = {};
-    String chatstr = chatuser!.toString();
-    usermap = JsonUtil.strtoMap(chatstr);
-    usermap.putIfAbsent("userid", () => chatuser!.id);
-    usermap.putIfAbsent("messageid", () => mesid);
-    usermap.putIfAbsent("type", () => type);
-    usermap.putIfAbsent("pass", () => pass);
-    usermap.putIfAbsent("img", () => imgmd5);
-    usermap.putIfAbsent("type", () => type);
-    usermap.putIfAbsent("key", () => key);
-    if (kDebugMode || kProfileMode) usermap.putIfAbsent("debug", () => "debug");
-    if (privatekey.isNotEmpty) usermap.putIfAbsent("privatekey", () => privatekey);
-    if (groupuser.isNotEmpty) usermap.putIfAbsent("groupuser", () => groupgetJson(groupuser));
-    if (groupmain.isNotEmpty) usermap.putIfAbsent("groupmain", () => groupgetJson(groupmain));
-    if (groupmainuser.isNotEmpty) usermap.putIfAbsent("groupmainuser", () => groupmainuser);
     return usermap;
   }
 
