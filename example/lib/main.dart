@@ -243,7 +243,6 @@ class _MyHomePageState extends State<MyHomePage> {
             _buildButton('打开grab', openGrabFromWeb),
             _buildButton('用户widget', userwidget),
             _buildButton('报名类', meettype)
-
           ],
         ),
       ),

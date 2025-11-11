@@ -31,13 +31,12 @@ class FChatApiSdk {
   static CardArr loccard=CardArr();
   static bool isFchatBrower=false;  //是否在fchat app中运行
   static String fchathost="https://fchat.us/";
-  static String debughost="http://fchat.us";
+  static String debughost="http://dev.fchat.us";
 
   static init(String userid, String token, void Function(bool state) webcall,
       void Function(bool state) appcall,{String appname=""})  async {
     WidgetsFlutterBinding.ensureInitialized();
     initenv();
-    //PhoneUtil.applog("链接域名$host  调试域名$debughost");
     Translate.initTra();
     UserObj.token = token;
     UserObj.userid = userid;
@@ -49,7 +48,6 @@ class FChatApiSdk {
         _readgroupid();
       } else {
         PhoneUtil.applog("服务号鉴权失败");
-
         webcall(false);
       }
     });

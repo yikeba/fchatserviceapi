@@ -62,21 +62,14 @@ class FChatFileObj {
     return map;
   }
 
-  Future<void> writeByte(Uint8List data, String name, void Function(bool state) upstate) async {
+  Future writeByte(Uint8List data, String name, void Function(bool state) upstate) async {
     try {
       fileBytes = data;
       Map<String, dynamic> map = _getFileMap();
-      map.putIfAbsent(
-        'file',
-            () => MultipartFile.fromBytes(
-          fileBytes!,
-          filename: name,
-          contentType: MediaType('text', 'html'),
-        ),
-      );
+      String base64=JsonUtil.setbase64Uint8list(fileBytes);
+      map.putIfAbsent('data', () => data);
+      String url = HttpWebApi.geturl();     // 发送 POST 请求
       FormData formData = FormData.fromMap(map);
-      // 发送 POST 请求
-      String url = HttpWebApi.geturl();
       Response response = await _dio.post(
         url,
         data: formData,
@@ -154,12 +147,12 @@ class FChatFileObj {
         print("无法读取文件内容");
         return;
       }
-      filedata = JsonUtil.setbase64(data);
-      fileBytes = Uint8List.fromList(filedata!.codeUnits);
-      if (fileBytes == null) {
-        print("数据转换base64 byte错误");
-        return;
-      }
+     // filedata = JsonUtil.setbase64(data);
+      //fileBytes = Uint8List.fromList(filedata!.codeUnits);
+      //if (fileBytes == null) {
+        //print("数据转换base64 byte错误");
+        //return;
+     // }
       Map<String, dynamic> map = _getDataMap();
       map.putIfAbsent('data', () => data);
       FormData formData = FormData.fromMap(map);
@@ -191,7 +184,7 @@ class FChatFileObj {
       html.File file, void Function(String url) upstate) async {
     this.file = file;
     await initfile();
-    filename=file.name;
+    if(filename.isEmpty) filename=file.name;
     try {
       if (fileBytes == null) {
         print("无法读取文件内容");

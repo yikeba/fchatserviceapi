@@ -77,7 +77,7 @@ class Translate {
         if (map.containsKey(lang)) {
           String rec= map[lang];
           if(str!=rec){
-            PhoneUtil.applog("开始翻译$str,获得本地缓存翻译内容$rec");
+            //PhoneUtil.applog("开始翻译$str,获得本地缓存翻译内容$rec");
             return rec;
           }
         }
