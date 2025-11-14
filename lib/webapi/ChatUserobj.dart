@@ -57,7 +57,6 @@ class ChatUser extends UserBase {
     // 在你的方法中（假设这是头像加载逻辑的一部分）
     if (base64 != null && base64!.isNotEmpty) {
       try {
-        // 将 base64 字符串解码为 Uint8List（图片字节数据）
         Uint8List imgBytes = base64Decode(base64!);
         PhoneUtil.applog("Base64 图片解码成功，大小: ${imgBytes.length} bytes");
         Widget w = ClipRRect(
@@ -202,7 +201,7 @@ class ChatUserobj {
       type = ChatUserUtil.chatUser;
     }
     chatuser = ChatUser(id: userid, username: name, avatarURL: imgurl);
-
+    chatuser!.base64=base64;
     if (map.containsKey("nicename")) {
       nicename = map["nicename"];
       if (nicename.isNotEmpty) {

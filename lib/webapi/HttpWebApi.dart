@@ -56,10 +56,6 @@ class HttpWebApi {
 
   static geturl() {
     if (kDebugMode) {
-      //return "https://www.freechat.cloud/sappbox";
-      //PhoneUtil.applog("开发模式登录验证");
-     // return FChatApiSdk.debughost+"sappbox";
-     // String url="http://43.217.155.53:8080/sappbox";
       String url="${FChatApiSdk.debughost}:8080/sappbox";
       return url;
     } else {
@@ -80,7 +76,6 @@ class HttpWebApi {
   static String _getBaseUrl(String fullUrl) {
     Uri uri = Uri.parse(fullUrl);
     String baseUrl = "${uri.scheme}://${uri.host}:${uri.port}";
-    // 确保去掉 URL 末尾的 `/`
     return baseUrl.replaceAll(RegExp(r'/$'), '');
   }
 

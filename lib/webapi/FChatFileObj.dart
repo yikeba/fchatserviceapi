@@ -181,15 +181,20 @@ class FChatFileObj {
   }
 
   Future<void> writeFile(
-      html.File file, void Function(String url) upstate) async {
+      html.File file,
+      void Function(String url) upstate, {
+        void Function(int sent, int total)? onProgress, // 新增可选参数
+      }) async {
     this.file = file;
     await initfile();
-    if(filename.isEmpty) filename=file.name;
+    if (filename.isEmpty) filename = file.name;
+
     try {
       if (fileBytes == null) {
         print("无法读取文件内容");
         return;
       }
+
       // 准备表单数据
       Map<String, dynamic> map = _getFileMap();
       map.putIfAbsent(
@@ -201,7 +206,8 @@ class FChatFileObj {
         ),
       );
       FormData formData = FormData.fromMap(map);
-      // 发送 POST 请求
+
+      // 发送 POST 请求，带上传进度回调
       String url = HttpWebApi.geturl();
       Response response = await _dio.post(
         url,
@@ -212,18 +218,19 @@ class FChatFileObj {
             "Authorization": authHeader
           },
         ),
+        onSendProgress: (sentBytes, totalBytes) {
+          if (onProgress != null) {
+            onProgress(sentBytes, totalBytes); // 回调上传进度
+          }
+        },
       );
+
       // 检查上传结果
       if (response.statusCode == 200) {
         String rec = JsonUtil.getbase64(response.data);
-        Map recmap=JsonUtil.strtoMap(rec);
-        String url="";
+        Map recmap = JsonUtil.strtoMap(rec);
+        String url = "";
         PhoneUtil.applog("writeFile file 文件上传成功: $rec");
-        if(recmap.containsKey(filename)){
-          String md5=recmap[filename];
-          url="https://fchatmenchat.s3.ap-southeast-1.amazonaws.com/"+UserObj.userid+"/"+filemd.name+"/"+md5;
-          print("file 公开访问链接: $url");
-        }
         upstate(url);
         PhoneUtil.applog("file 文件上传成功: $rec");
       } else {
@@ -233,6 +240,7 @@ class FChatFileObj {
       print("上传过程中出现错误: $e");
     }
   }
+
 
   Map<String, dynamic> _getreadMap(path) {
     Map<String, dynamic> map = {};

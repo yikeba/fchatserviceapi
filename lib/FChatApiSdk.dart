@@ -41,6 +41,7 @@ class FChatApiSdk {
     UserObj.token = token;
     UserObj.userid = userid;
     UserObj.appname=appname;
+    PhoneUtil.applog("读取配置服务器同域:${debughost},生产环境${fchathost}");
     _readApiJson();
     HttpWebApi.weblogin().then((value) {
       if (value.data == "loginok") {
@@ -114,6 +115,9 @@ class FChatApiSdk {
     FirebaseConfig.measurementId= dotenv.get('firebasemeasurementId');
     FirebaseConfig.clientId=dotenv.get('clientId');
     FirebaseConfig.redirectUri=dotenv.get('redirectUri');
+    fchathost=dotenv.get("host");
+    debughost=dotenv.get("debughost");
+
     await Firebase.initializeApp(
       options: FirebaseConfig.webConfig,  // 获取配置
     );

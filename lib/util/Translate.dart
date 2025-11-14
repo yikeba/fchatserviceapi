@@ -94,7 +94,7 @@ class Translate {
         //PhoneUtil.applog("翻译标签内容$str返回内容$value,to语言$lang");
         saveloctra();
       }).catchError((e) {
-        PhoneUtil.applog("catch err翻译错误${e.toString()}");
+        //PhoneUtil.applog("catch err翻译错误${e.toString()}");
       });
     }catch(e){
       PhoneUtil.applog("翻译错误${e.toString()}");

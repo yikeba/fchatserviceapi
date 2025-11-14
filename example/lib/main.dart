@@ -56,9 +56,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Widget? userimg;
   @override
   void initState() {
     super.initState();
+    userimg=const SizedBox(width: 1,);
     initload();
     FChatBridge.init();
     FChatBridge.onMessage.listen((msg) {
@@ -210,6 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('FChat Api'),
+        leading: userimg!,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -242,7 +245,8 @@ class _MyHomePageState extends State<MyHomePage> {
             _buildButton('翻译数据', readTra),
             _buildButton('打开grab', openGrabFromWeb),
             _buildButton('用户widget', userwidget),
-            _buildButton('报名类', meettype)
+            _buildButton('报名类', meettype),
+            userimg!
           ],
         ),
       ),
@@ -251,9 +255,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   userwidget(){
      FChatUserInfo().getUserInfo((user){
-        PhoneUtil.applog("读取app 使用账户信息${user.toString()}");
-        //直接使用用户widget
-        Widget uimg= user.chatuser!.getavatar(width: 50,height: 50,radius: 15);
+        PhoneUtil.applog("读取app 使用账户信息${user.toString()}"); //直接使用用户widget
+        userimg= user.chatuser!.getavatar(width: 50,height: 50,radius: 15);
+        if(mounted){
+          setState(() {
+
+          });
+        }
      });
   }
 
