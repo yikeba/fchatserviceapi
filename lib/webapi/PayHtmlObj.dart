@@ -57,9 +57,20 @@ class PayHtmlObj{
     return JsonUtil.maptostr(getJson());
   }
 
+  toQrString(){
+    Map map={};
+    map["md5"]=getJson();
+    map["title"]="服务年费";
+    map["description"]="开通/续缴服务号年费50USD";
+    map["amount"]="50.00";   //, "0"),"]
+    map["userid"]=payuserid;
+
+    return JsonUtil.maptostr(map);
+  }
+
   Future<String> getQrString() async {
     Map map={};
-    map["pay"]=JsonUtil.setbase64(toString());
+    map["pay"]=JsonUtil.setbase64(toQrString());
     Map<String, dynamic>sendmap = WebPayUtil.getDataMap(
         map, WebCommand.getqrpay);
     String rec = await WebPayUtil.httpFchatserver(sendmap);

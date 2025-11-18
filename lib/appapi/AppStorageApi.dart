@@ -1,13 +1,13 @@
 import '../Util/JsonUtil.dart';
 import 'FChatApiObj.dart';
 
-class AppStorageapi {
+class AppStorageApi {
   ApiObj? aobj;
   String md;
   String name;
   String data="";
 
-  AppStorageapi(this.md,this.name,this.data);
+  AppStorageApi(this.md,this.name,this.data);
 
   save(void Function(String recdata) fchatsend){
     aobj?.dispose();

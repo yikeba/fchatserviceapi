@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:fchatapi/FChatApiSdk.dart';
 import 'package:fchatapi/Util/JsonUtil.dart';
+import 'package:fchatapi/appapi/AppStorageApi.dart';
 import 'package:fchatapi/appapi/BaseJS.dart';
 import 'package:fchatapi/appapi/FChatUserInfo.dart';
 import 'package:fchatapi/appapi/GpsApi.dart';
@@ -246,11 +247,25 @@ class _MyHomePageState extends State<MyHomePage> {
             _buildButton('打开grab', openGrabFromWeb),
             _buildButton('用户widget', userwidget),
             _buildButton('报名类', meettype),
+            _buildButton('app文件', readappData),
             userimg!
           ],
         ),
       ),
     );
+  }
+  readappData(){
+    String md="tmppay";   //目录名称
+    String name="sdfsdfsfd";   //文件名称
+    String data="112312312312";  //文件数据
+    //写入
+    AppStorageApi(md,name,data).save((value){
+      PhoneUtil.applog("存储到app 文件返回$value");
+    });
+
+    AppStorageApi(md,name,"").read((value){
+      PhoneUtil.applog("存储到app 文件返回$value");
+    });
   }
 
   userwidget(){
