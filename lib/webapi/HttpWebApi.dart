@@ -86,8 +86,8 @@ class HttpWebApi {
     String data = Tools.generateRandomString(75);
     String basedata = JsonUtil.setbase64(data);
     map.putIfAbsent("data", () => basedata);
-    String sign = SignUtil.getmd5Signtostr(basedata, UserObj.token);
-    map.putIfAbsent("sign", () => sign);
+   // String sign = SignUtil.getmd5Signtostr(basedata, UserObj.token);
+   // map.putIfAbsent("sign", () => sign);
     return map;
   }
 
@@ -130,7 +130,7 @@ class HttpWebApi {
     return RecObj("");
   }
 
-  static Map<String, dynamic> creatdata(String data) {
+  /*static Map<String, dynamic> creatdata(String data) {
     Map<String, dynamic> map = {};
     map.putIfAbsent("userid", () => UserObj.userid);
     String basedata = JsonUtil.setbase64(data);
@@ -138,7 +138,7 @@ class HttpWebApi {
     String sign = SignUtil.getmd5Signtostr(basedata, UserObj.token);
     map.putIfAbsent("sign", () => sign);
     return map;
-  }
+  }*/
 
   static String creatuserdata(String command, Map dmap) {
     Map map = HashMap();

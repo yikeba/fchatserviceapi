@@ -5,13 +5,13 @@ import 'package:fchatapi/util/JsonUtil.dart';
 import 'package:fchatapi/util/Tools.dart';
 import 'package:fchatapi/webapi/FChatAddress.dart';
 import 'package:fchatapi/webapi/WebCommand.dart';
-
 import '../util/DateUtil.dart';
 import '../util/PhoneUtil.dart';
 import '../util/UserObj.dart';
 import 'ChatUserobj.dart';
 import 'HttpWebApi.dart';
 import 'PayReturnObj.dart';
+import 'StripeUtil/WebPayUtil.dart';
 
 class PayHtmlObj{
   String payuserid="";  //付款人id
@@ -50,6 +50,22 @@ class PayHtmlObj{
     if(map.containsKey("currency")){
       currency=map["currency"];
     }
+  }
+
+  @override
+  toString(){
+    return JsonUtil.maptostr(getJson());
+  }
+
+  Future<String> getQrString() async {
+    Map map={};
+    map["pay"]=JsonUtil.setbase64(toString());
+    Map<String, dynamic>sendmap = WebPayUtil.getDataMap(
+        map, WebCommand.getqrpay);
+    String rec = await WebPayUtil.httpFchatserver(sendmap);
+    RecObj recobj = RecObj(rec);
+    PhoneUtil.applog("返回支付QR字符串${recobj.data}");
+    return recobj.data;
   }
 
   getJson(){

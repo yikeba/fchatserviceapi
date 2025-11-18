@@ -261,6 +261,7 @@ class CardObj {
     return decrypted;
   }
 
+  @override
   String toString(){
     return JsonUtil.maptostr(toJson());
   }

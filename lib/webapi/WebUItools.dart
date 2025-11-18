@@ -19,13 +19,7 @@ import 'package:universal_html/html.dart' as html;
 class WebUItools{
 
   static openWebpay(BuildContext context,Widget? order,PayHtmlObj? pobjhtml,{islive=false}) async {
-    //打开插件支付
-   /* if(pobjhtml !=null){
-      pobjhtml.probj ?? PayReturnObj();
-      *//* if(pobjhtml.probj==null){
-         pobjhtml.probj=PayReturnObj();
-       }*//*
-    }*/
+
     if(FChatApiSdk.isFchatBrower && pobjhtml!=null){
       PayObj fchatpay=PayObj();
       fchatpay.amount=pobjhtml.money;

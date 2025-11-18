@@ -16,4 +16,14 @@ class ShortUrl{
     return recobj.json;
   }
 
+  static Future<Map> creatPayShortUrl(ServiceUrl serverurl) async {
+    Map map=serverurl.toJson();
+    Map<String, dynamic>sendmap = WebPayUtil.getDataMap(
+        map, WebCommand.shorturl);
+    String rec = await WebPayUtil.httpFchatserver(sendmap);
+    RecObj recobj = RecObj(rec);
+    PhoneUtil.applog("返回短链接${recobj.json}");
+    return recobj.json;
+  }
+
 }

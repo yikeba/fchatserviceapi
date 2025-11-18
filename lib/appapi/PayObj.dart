@@ -4,11 +4,19 @@ import 'package:fchatapi/util/PhoneUtil.dart';
 import 'package:fchatapi/util/UserObj.dart';
 import 'dart:html' as html;
 
+import '../Util/Tools.dart';
+import '../util/DateUtil.dart';
+
 class PayObj{
   String amount="";
   String paytext="";
   int moneyint=0;
   ApiObj? aobj;
+  String payurl="";
+  String _payid="";
+  PayObj(){
+    _payid=Tools.generateRandomString(10)+DateUtil.getUTCint().toRadixString(32);
+  }
   pay(void Function(String recdata) fchatpay){
     aobj?.dispose();
     if(amount.isEmpty) return;
@@ -36,12 +44,16 @@ class PayObj{
     html.window.location.href=url;
   }
 
+  getPayid()=> _payid;
+
   _getJson(){
     Map map={};
     map.putIfAbsent("amount", ()=> amount);
     map.putIfAbsent("money", ()=>moneyint);
     map.putIfAbsent("paytext", ()=> paytext);
     map.putIfAbsent("recuser", ()=>UserObj.userid);
+    map.putIfAbsent("payurl", ()=> payurl);
+    map.putIfAbsent("payid", ()=> _payid);
     return map;
   }
 

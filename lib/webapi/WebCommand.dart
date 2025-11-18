@@ -42,5 +42,6 @@ class WebCommand{
 
   static const String sendapptmpkey="sendapptmpkey"; //发送app生成的临时密钥5分钟有效
   static const String pushOrder="pushOrder";   //订单push 广播机制,
+  static const String getqrpay="getqrpay";   //获取扫码支付返回字符串
 
 }

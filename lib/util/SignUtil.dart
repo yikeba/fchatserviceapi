@@ -4,16 +4,31 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'PhoneUtil.dart';
-
+import 'UserObj.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class SignUtil{
+
+  static String encryptData(String str) {  //加密
+    String key = _adjustKeyLength(UserObj.token);
+    final encrypter = encrypt.Encrypter(
+      encrypt.AES(encrypt.Key.fromUtf8(key), mode: encrypt.AESMode.ecb),
+    );
+    final encrypted = encrypter.encrypt(str);
+    return encrypted.base64; // 返回 Base64 编码的加密字符串
+  }
+
+  static String _adjustKeyLength(String key) {
+    if (key.length > 16) {
+      return key.substring(0, 16);
+    } else {
+      return key.padRight(16, '0'); // 不足补 0
+    }
+  }
+
+
   static String getSign(Map parameter,String keystr) {
     var Key = keystr;
-    //var timestamp = DateTime.now().millisecondsSinceEpoch;
-    //var versionNumber = 'app-v1';
-   // parameter['timestamp'] = timestamp.toString();
-    //parameter['versionNumber'] = versionNumber;
-    /// 存储所有key
     List<String> allKeys = [];
     parameter.forEach((key,value){
       String valuestr="";
