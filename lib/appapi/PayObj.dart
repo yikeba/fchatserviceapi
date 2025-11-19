@@ -14,8 +14,10 @@ class PayObj{
   ApiObj? aobj;
   String payurl="";
   String _payid="";
-  PayObj(){
+  String _order="";
+  PayObj({String order=""}){
     _payid=Tools.generateRandomString(10)+DateUtil.getUTCint().toRadixString(32);
+    _order=order;
   }
   pay(void Function(String recdata) fchatpay){
     aobj?.dispose();
@@ -54,6 +56,7 @@ class PayObj{
     map.putIfAbsent("recuser", ()=>UserObj.userid);
     map.putIfAbsent("payurl", ()=> payurl);
     map.putIfAbsent("payid", ()=> _payid);
+    if(_order.isNotEmpty)map.putIfAbsent("order", ()=> _order);
     return map;
   }
 

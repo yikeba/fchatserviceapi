@@ -200,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   paytest(){
-    PayObj pay=PayObj();
+    PayObj pay=PayObj(order:"订单数据");
     pay.amount="0.05";
     pay.paytext="测试支付";
     pay.pay((value){
