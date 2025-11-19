@@ -264,7 +264,11 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     AppStorageApi(md,name,"").read((value){
-      PhoneUtil.applog("存储到app 文件返回$value");
+      PhoneUtil.applog("读取到app 文件返回$value");
+    });
+
+    AppStorageApi(md,name,"").delfile((value){
+      PhoneUtil.applog("删除文件返回:$value");
     });
   }
 

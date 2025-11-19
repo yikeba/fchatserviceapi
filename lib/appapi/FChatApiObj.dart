@@ -16,6 +16,7 @@ enum ApiName {
   showmap,
   localstorage,
   readstorage,
+  delstorage,
   sendurl,
   order,
   voice,

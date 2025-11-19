@@ -28,6 +28,18 @@ class AppStorageApi {
     aobj!.setData(toString());
   }
 
+  delfile(void Function(String recdata) fchatsend){
+    aobj?.dispose();
+    if(name.isEmpty){
+      fchatsend("err name null");
+      return;
+    }
+    aobj=ApiObj(ApiName.delstorage,(value){
+      fchatsend(value);
+    });
+    aobj!.setData(toString());
+  }
+
   toJson(){
     Map map={};
     map.putIfAbsent("md", ()=> md);
