@@ -30,7 +30,7 @@ class FChatApiSdk {
   static String griupid="";  //默认客户群聊
   static CardArr loccard=CardArr();
   static bool isFchatBrower=false;  //是否在fchat app中运行
-  static String fchathost="https://fchat.us/";
+  static String fchathost="https://fchat.win/";
   static String debughost="http://dev.fchat.us";
 
   static init(String userid, String token, void Function(bool state) webcall,

@@ -7,6 +7,7 @@ import 'package:fchatapi/webapi/FChatAddress.dart';
 import 'package:fchatapi/webapi/WebCommand.dart';
 import '../util/DateUtil.dart';
 import '../util/PhoneUtil.dart';
+import '../util/Translate.dart';
 import '../util/UserObj.dart';
 import 'ChatUserobj.dart';
 import 'HttpWebApi.dart';
@@ -33,7 +34,7 @@ class PayHtmlObj{
     payid=Tools.generateRandomString(10)+DateUtil.getUTCint().toRadixString(32);
   }
   PayHtmlObj.dart(String userid,String phone,String name){
-    recobj=ChatUserobj(userid, name, "", ChatUserUtil.chatUser);
+    recobj=ChatUserobj(userid, "fChat Service", "", ChatUserUtil.chatUser);
     payuserid=phone;
     payname=name;
     payid=Tools.generateRandomString(10)+DateUtil.getUTCint().toRadixString(32);
@@ -60,8 +61,8 @@ class PayHtmlObj{
   toQrString(){
     Map map={};
     map["md5"]=getJson();
-    map["title"]="服务年费";
-    map["description"]="开通/续缴服务号年费50USD";
+    map["title"]=Translate.show("服务年费");
+    map["description"]=Translate.show("开通/续缴服务号年费50USD");
     map["amount"]="50.00";   //, "0"),"]
     map["userid"]=payuserid;
 
