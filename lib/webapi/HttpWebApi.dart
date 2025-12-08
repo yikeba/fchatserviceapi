@@ -55,7 +55,7 @@ class HttpWebApi {
   }
 
   static geturl() {
-    if (kDebugMode) {
+    if (kDebugMode || kProfileMode) {
       String url="${FChatApiSdk.debughost}:8080/sappbox";
       return url;
     } else {
