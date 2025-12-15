@@ -17,15 +17,20 @@ class ABA_KH{
   //这事是打开aba app 区分android ios打开
   static Future<bool> openpayaba(BuildContext context,Map abamap) async {
     if (abamap.isEmpty) return false;
-   // return await AppLauncherUtil.openPayAba(context, abamap);
     String _url = abamap["abapay_deeplink"];
     if (!WebUtil.isMobileiBrowser()) {
       _url = abamap["qrString"];
     }
     Uri uri = Uri.parse(_url);
     try {
-      if (await launchUrl(uri,mode: LaunchMode.externalApplication)) {
-        return true;
+      if(WebUtil.isAndroid()) {
+        if (await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+          return true;
+        }
+      }else{
+        bool ok = await showOpenAbaDialog(context);
+        if (!ok) return false;
+        Tools.openChrome(_url);
       }
     } catch (e) {
       print("打开 ABA App 失败: $e");
@@ -34,6 +39,34 @@ class ABA_KH{
     }
     return false;
   }
+
+
+  static Future<bool> showOpenAbaDialog(BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("打开 ABA Bank"),
+          content: const Text(
+            "即将跳转到 ABA Bank App 完成支付。\n\n"
+                "如果未安装 ABA App，请先安装。",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("取消"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text("打开 ABA App"),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+  }
+
 
   static Future<String> _creatABAordert(Map<String,dynamic> map) async {
     FormData formData = FormData.fromMap(map);
@@ -95,7 +128,7 @@ class ABA_KH{
     Map<String,dynamic> sendmap=_getDataMap(map);
     String rec = await _creatABAordert(sendmap);
     RecObj robj=RecObj(rec);
-    bool isopenaba=await openpayaba(context,robj.json);
+    bool isopenaba = await openpayaba(context,robj.json);
     return isopenaba;
   }
 

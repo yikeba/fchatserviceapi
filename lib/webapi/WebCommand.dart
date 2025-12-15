@@ -21,6 +21,9 @@ class WebCommand{
   static const String readstripekey="readstripekey";  //读取stripekey
   static const String createWebPaymentIntent="createWebPaymentIntent";  //服务器创建支付PaymentIntent
   static const String createWebPayUrl="createWebPayUrl";  //服务器创建stripe 跳转支付
+  //static const String stripeapplegooglepay="stripeapplegooglepay";   //stripepay 苹果/google支付
+
+
   static const String verifyPay="verifyPay";  //验证支付是否成功
   static const String weblogin="weblogin";  //web扫码登录
   static const String  chatService="chatService";  //更新服务号资料

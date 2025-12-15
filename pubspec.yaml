@@ -25,7 +25,7 @@ dependencies:
   url_launcher: ^6.3.2
   path: ^1.8.3
   flutter_stripe: ^11.4.0  #付款支付插件，支持ios google masert visa
-  flutter_stripe_web: ^6.4.0  #web版本
+  flutter_stripe_web: ^6.5.1  #web版本
   translator: ^1.0.3+1  #免费翻译插件
   country_currency_pickers: ^3.0.0     #货币数据与国旗插件
   language_picker: ^0.4.5

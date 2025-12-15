@@ -8,7 +8,7 @@ class ShortUrl{
 
   static Future<Map> creatShortUrl(ServiceUrl serverurl) async {
     Map map=serverurl.toJson();
-    PhoneUtil.applog("创建短连接参数$map");
+    //PhoneUtil.applog("创建短连接参数$map");
     Map<String, dynamic>sendmap = WebPayUtil.getDataMap(
         map, WebCommand.shorturl);
     String rec = await WebPayUtil.httpFchatserver(sendmap);

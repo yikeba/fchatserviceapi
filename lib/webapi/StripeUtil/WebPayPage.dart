@@ -1,8 +1,11 @@
+import 'dart:ui' as web;
+
 import 'package:fchatapi/Util/JsonUtil.dart';
 import 'package:fchatapi/WidgetUtil/CheckWidget.dart';
 import 'package:fchatapi/util/Tools.dart';
 import 'package:fchatapi/util/Translate.dart';
 import 'package:fchatapi/webapi/Bank/ABA_KH.dart';
+import 'package:fchatapi/webapi/Bank/PaymentSelectorWidget.dart';
 import 'package:fchatapi/webapi/StripeUtil/CookieStorage.dart';
 import 'package:fchatapi/webapi/StripeUtil/WebPayUtil.dart';
 import 'package:fchatapi/webapi/WebUtil.dart';
@@ -10,15 +13,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe_web/flutter_stripe_web.dart';
 import '../../WidgetUtil/AuthWidget.dart';
 import '../../WidgetUtil/AutoWaitWidget.dart';
 import '../../util/PhoneUtil.dart';
+import '../GooglePay/web_payment_interop.dart';
 import '../HttpWebApi.dart';
 import '../PayHtmlObj.dart';
 import '../WebCommand.dart';
 import 'CardObj.dart';
 import 'LoadButton.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:web/web.dart' as web;
 
 class Webpaypage extends StatefulWidget {
   CardObj? cardobj;
@@ -75,24 +81,28 @@ class _WebhookPaymentScreenState extends State<Webpaypage> {
     List arr = [];
     arr.add("assets/pay/visa.png");
     arr.add("assets/pay/master.png");
+    arr.add("assets/pay/apple.png");
+    arr.add("assets/pay/link.png");
     arr.add("assets/pay/fcb.png");
     arr.add("assets/pay/unionpay.png");
     arr.add("assets/pay/discover.png");
     return arr;
   }
 
-  String _getcardnum() {
+/*  String _getcardnum() {
     if (cardnumber.isNotEmpty) return "";
     if (widget.cardobj == null) return "";
     if (widget.cardobj!.cardNumber.isNotEmpty)
       return widget.cardobj!.cardNumber;
     return "";
-  }
+  }*/
 
+/*
   String _getHetext() {
     if (cardnumber.isNotEmpty) return cardnumber;
     return 'XXXX XXXX XXXX 1234';
   }
+*/
 
   List<Widget> cardarr() {
     List arr = initcards();
@@ -201,10 +211,37 @@ class _WebhookPaymentScreenState extends State<Webpaypage> {
                     isaba = false;
                     setState(() {});
                   },
-                  label: Translate.show("信用卡/借记卡"),
+                  label: Translate.show("信用卡/借记卡/Apple Pay/Link Pay"),
                   child: _getCardInput((value) {
                     isCardinput = value.state;
                   }),
+                ),
+
+                PaymentSelectorWidget(
+                  pobj: widget.pobj!,
+                  onApplePay: () async {
+                    /*if (widget.pobj != null) {
+                      num amount = JsonUtil.strtodou(widget.pobj!.money);
+                      PhoneUtil.applog("开始呼叫Apple pay 金额$amount");
+                      await WebStripe.instance.confirmPaymentElement(
+                        ConfirmPaymentElementOptions(
+                          confirmParams: ConfirmPaymentParams(return_url: web.window.location.href),
+                        ),
+                      );
+                    }*/
+                    return true;
+                  },
+                  onGooglePay: () async {
+                    if (widget.pobj != null) {
+                      bool ispayorder = await widget.pobj!.creatPayorder();
+                      if (ispayorder) {
+                        num amount=JsonUtil.strtodou(widget.pobj!.money);
+                        launchGooglePayJS(amount.toDouble(), widget.pobj!.currency);
+                        PhoneUtil.applog("开始呼叫Googl Pay${widget.pobj!.money}");
+                      }
+                    }
+                    return true;
+                  },
                 ),
                 const SizedBox(height: 1),
                 if (WebUtil.isMobileiBrowser() &&
@@ -252,82 +289,6 @@ class _WebhookPaymentScreenState extends State<Webpaypage> {
     );
   }
 
-
-  @override
-  Widget _oldbuild(BuildContext context) {
-    if (MediaQuery.of(context).size.width < 512) {
-      width = MediaQuery.of(context).size.width;
-    }
-    return Scaffold(
-
-        backgroundColor: Colors.transparent,
-        body: Align(
-            alignment: Alignment.topCenter, // 底部居中
-            child: Container(
-                alignment: Alignment.topCenter,
-                color: Colors.blueGrey,
-                width: width,
-                // height: height,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // 水平居中
-                  mainAxisAlignment: MainAxisAlignment.start, // 从上到下排列
-                  children: [
-                    CheckTextWidget(
-                        key: ValueKey(Tools.generateRandomString(70)),
-                        initialValue: iscard,
-                        onChanged: (state) {
-                          iscard = state;
-                          isaba = false;
-                          setState(() {});
-                        },
-                        label: Translate.show("信用卡/借记卡"),
-                        child: _getCardInput((value) {
-                            if (value.state) {
-                            isCardinput = value.state;
-                            return;
-                          }
-                          //onCreditCardModelChange(value.creditCardModel);
-                        })),
-                    const SizedBox(height: 1),
-                    if (WebUtil.isMobileiBrowser() && widget.pobj!.currency=="USD" && !WebUtil.isWecHAT())
-                      CheckTextWidget(
-                        key: ValueKey(Tools.generateRandomString(70)),
-                        initialValue: isaba,
-                        onChanged: (state) {
-                          setState(() {
-                            isaba = state;
-                            iscard = false;
-                          });
-                        },
-                        label: Translate.show("ABA银行   ${_getWecbat()}"),
-                        child: _setABA(),
-                      ),
-                    //const SizedBox(height: 3),
-                    EmailAuthWidget(
-                        email: email!,
-                        onLoginSuccess: (email) {
-                          this.email = email;
-                          CookieStorage.saveToCookie("email", email);
-                          PhoneUtil.applog("保存cookIE email:$email");
-                        }),
-                    widget.order!,
-                    const Spacer(), // 占据剩余空间
-                    Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                            alignment: Alignment.center,
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            padding: const EdgeInsets.all(15),
-                            child: LoadingButton(
-                              onPressed: payment,
-                              text: Translate.show('Payment'),
-                            ))),
-                    // 底部添加些空间
-                    const SizedBox(height: 5),
-                  ],
-                ))));
-  }
-
   void _showSnackbar(String message) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message)));
@@ -347,13 +308,13 @@ class _WebhookPaymentScreenState extends State<Webpaypage> {
       if (ispayorder) {
         if (isaba) {
           bool isopen = await ABA_KH.abapayweb(context, widget.pobj!.money, widget.pobj!.payid);
+
           if (isopen) {
             String url = "${widget.pobj!.probj!.returnurl}&payid=${widget.pobj!.payid}";
             if (email!.isNotEmpty) {
               String baseemail = JsonUtil.setbase64(email!);
               url = url + "&email=$baseemail";
             }
-            //await Tools.openChrome(url);
             html.window.location.href = url;
           } else {
             _showSnackbar(Translate.show("打开ABA银行失败"));
@@ -412,7 +373,7 @@ class _WebhookPaymentScreenState extends State<Webpaypage> {
     Map<String, dynamic> sendmap = WebPayUtil.getDataMap(map, WebCommand.createWebPayUrl);
     String rec = await WebPayUtil.httpFchatserver(sendmap);
     RecObj robj = RecObj(rec);
-    //PhoneUtil.applog("返回网络支付参数$rec");
+    PhoneUtil.applog("返回网络支付参数$rec");
     stripeurl = StripeUrlObj(robj.json);
 
     return StripeUrlObj(robj.json);

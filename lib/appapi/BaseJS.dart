@@ -51,7 +51,7 @@ class BaseJS {
           //PhoneUtil.applog('BaseJS invalid message format: $message');
         }
       } catch (e) {
-        PhoneUtil.applog('BaseJS error: $e, message: $message');
+       // PhoneUtil.applog('BaseJS error: $e, message: $message');
       }
     });
     PhoneUtil.applog('BaseJS initialized');

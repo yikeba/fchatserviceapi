@@ -47,6 +47,7 @@ class FChatApiSdk {
       if (value.data == "loginok") {
         webcall(true);
         _readgroupid();
+
       } else {
         PhoneUtil.applog("服务号鉴权失败");
         webcall(false);
@@ -70,8 +71,6 @@ class FChatApiSdk {
     griupid=RecObj(rec).data;
     PhoneUtil.applog("读取服务号默认客户群聊$griupid");
   }
-
-
 
   static _readApiJson() async {
     try {

@@ -63,7 +63,6 @@ class HttpWebApi {
     }
   }
 
-
   static String gethtmlurl() {
     if (kDebugMode) {
       return _getBaseUrl(html.window.location.href);

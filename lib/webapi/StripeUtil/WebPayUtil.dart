@@ -84,11 +84,11 @@ class WebPayUtil{
      Map map={};
      map.putIfAbsent("amount",()=> JsonUtil.getmoneyint(pobj.money));
      map.putIfAbsent("currency", ()=> "usd");
-     Map<String,dynamic>sendmap= getDataMap({},WebCommand.createWebPaymentIntent);
+     Map<String,dynamic>sendmap= getDataMap(map,WebCommand.createWebPaymentIntent);
      //这里是否有bug
      String rec=await httpFchatserver(sendmap);
      RecObj robj=RecObj(rec);
-    // PhoneUtil.applog("返回web 调用支付申请${robj.json}");
+     PhoneUtil.applog("返回web 调用支付申请${robj.json}");
      return robj.json;
    }
 
