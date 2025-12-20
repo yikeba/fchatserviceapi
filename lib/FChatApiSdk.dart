@@ -31,7 +31,7 @@ class FChatApiSdk {
   static CardArr loccard=CardArr();
   static bool isFchatBrower=false;  //是否在fchat app中运行
   static String fchathost="https://fchat.win/";
-  static String debughost="http://fchat.win";
+  static String debughost="http://dev.fchat.us";
 
   static init(String userid, String token, void Function(bool state) webcall,
       void Function(bool state) appcall,{String appname=""})  async {

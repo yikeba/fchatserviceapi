@@ -3,7 +3,9 @@ import 'package:fchatapi/webapi/PayHtmlObj.dart';
 
 import '../../Util/JsonUtil.dart';
 import '../../Util/PhoneUtil.dart';
+import '../../util/DateUtil.dart';
 import '../../util/UserObj.dart';
+import '../Bank/MoneyApi.dart';
 import '../HttpWebApi.dart';
 import '../WebCommand.dart';
 import 'CookieStorage.dart';
@@ -43,16 +45,34 @@ class WebPayUtil{
      sessionId ?? "";
      payid ?? "";
      Map map={};
-     //PhoneUtil.applog("发送服务器payid $payid");
      map.putIfAbsent("payid", ()=> payid);
      map.putIfAbsent("sessionid", ()=> sessionId);
      Map<String,dynamic>sendmap=getDataMap(map,WebCommand.verifyPay);
      String rec=await httpFchatserver(sendmap);
      RecObj robj=RecObj(rec);
-     if(robj.json.containsKey("payid")){
-       if(payid!.isEmpty) payid=robj.json["payid"];
-     }else{
-       return verifyPayObj;
+
+     if(robj.json.containsKey("payrec")) {
+       String payrec = robj.json["payrec"];
+       Map paymap=JsonUtil.strtoMap(payrec);
+       if(paymap.containsKey("payment_intent")){
+         verifyPayObj.paymentIntentId=paymap["payment_intent"];
+         //PhoneUtil.applog("stripe 订单id ${verifyPayObj.paymentIntentId}");
+       }
+       if(robj.json.containsKey("bank")) {
+         Map bank = robj.json["bank"];
+         //PhoneUtil.applog("支付流水单银行信息$bank");
+         verifyPayObj.bank=bank["name"];
+       }else{
+         verifyPayObj.detectPaymentProvider(paymap);
+       }
+      /* if(verifyPayObj.bank=="stripe"){
+         PhoneUtil.applog("支付机构的回调信息，在这里获取id${robj.json}");
+       }*/
+       if (robj.json.containsKey("payid")) {
+         if (payid!.isEmpty) payid = robj.json["payid"];
+       } else {
+         return verifyPayObj;
+       }
      }
      verifyPayObj.payid=payid!;
      verifyPayObj.ispay=false;
@@ -72,6 +92,7 @@ class WebPayUtil{
     // PhoneUtil.applog("返回查询支付流水单状态$rec");
      return PayHtmlObj.fromJson(robj.json);
    }
+
    static readstripekey() async {
      Map<String,dynamic>sendmap=getDataMap({},WebCommand.readstripekey);
      String rec=await httpFchatserver(sendmap);
@@ -149,4 +170,114 @@ class WebPayUtil{
 class VerifyPayObj{
    String payid="";
    bool ispay=false;
+   String bank="";
+   String paymentIntentId="";  //stripe订单的id
+   String status="";  //stripe 状态字符串
+   StripeOrderStatus? orderStatus;
+   /// 判断支付回调所属机构：ABA PayWay 或 Stripe
+   ///
+   /// [payrec] 订单表中 payrec 字段的原始字符串（JSON 或拼接格式）
+   /// 返回 'aba' | 'stripe' | 'unknown'
+   String detectPaymentProvider(Map data) {
+     if (data == null || data.isEmpty) {
+       bank='null';
+       return 'null';
+     }
+     // === ABA PayWay 判断 ===
+     if (data.containsKey('apv') &&
+         data.containsKey('tran_id') &&
+         data['payment_status'] == 'APPROVED' &&
+         data['status'] == 0) { // status 可能是 int 0 或 string "0"，Dart 会自动相等
+       bank='aba';
+       //PhoneUtil.applog("aba 支付金额$data");
+       final withdrawalOrder = WithdrawalOrder.fromBankPayment(data);
+       orderStatus= StripeOrderStatus(
+           paid: true,
+           available: withdrawalOrder.canWithdraw,
+           availableOn: withdrawalOrder.withdrawAvailableTimestampMs,
+           net: withdrawalOrder.getMoney(),
+           fee: 0,
+           currency: "USD",
+           statusMessage: data['payment_status'],
+           remainingSeconds: 0);
+       return 'aba';
+     }
+     // === Stripe 判断（特征最明显，先判）===
+     if ((data['object'] == 'checkout.session'
+         || data['object'] == 'payment_intent') &&
+         ( data['status'] == 'complete') || data["status"]=="succeeded") {
+       bank='stripe';
+       status= data["status"];
+       return 'stripe';
+     }
+     PhoneUtil.applog("fChat Pay支付验证状态$data");
+     Map dcobj=data["dcobj"];
+     orderStatus= StripeOrderStatus(
+         paid: true,
+         available: true,
+         availableOn: DateUtil.getUTCint(),
+         net: JsonUtil.getmoneyint(data["money"]),
+         fee: 0,
+         currency: dcobj["currency"],
+         statusMessage: "fChat Pay",
+         remainingSeconds: 0);
+     bank='fChat Pay';
+     return 'fChat Pay';
+   }
+}
+
+
+class WithdrawalOrder {
+  final double amount;
+  final String tranId;
+  final int paymentTimestampMs;      // 支付时间戳
+  final int withdrawAvailableTimestampMs;  // 延后一天时间戳
+  final bool canWithdraw;            // 当前是否可提现
+  final String paymentDatetime;
+  int money=0;
+  WithdrawalOrder({
+    required this.amount,
+    required this.tranId,
+    required this.paymentTimestampMs,
+    required this.withdrawAvailableTimestampMs,
+    required this.canWithdraw,
+    required this.paymentDatetime,
+  });
+
+  /// 从银行支付反馈 Map 转换生成提现订单
+  factory WithdrawalOrder.fromBankPayment(Map payment) {
+    final String dtStr = payment['datetime'];
+    final DateTime paymentDt = DateTime.parse(dtStr.replaceAll(' ', 'T')); // 处理格式
+    final int paymentTs = paymentDt.millisecondsSinceEpoch;
+
+    final int delayMs = 1440 * 60 * 1000; // 1天
+    final int availableTs = paymentTs + delayMs;
+    // 当前时间（这里用 DateTime.now()，实际运行时自动获取）
+    final bool canWithdrawNow = DateTime.now().millisecondsSinceEpoch > availableTs;
+
+    return WithdrawalOrder(
+      amount: (payment['amount'] as num).toDouble(),
+      tranId: payment['tran_id'] as String,
+      paymentTimestampMs: paymentTs,
+      withdrawAvailableTimestampMs: availableTs,
+      canWithdraw: canWithdrawNow,
+      paymentDatetime: dtStr,
+    );
+  }
+
+  int getMoney(){
+    return JsonUtil.getmoneyint(amount.toString());
+  }
+
+  @override
+  String toString() {
+    return '''
+提现订单:
+  订单ID: $tranId
+  金额: \$${amount.toStringAsFixed(2)}
+  支付时间: $paymentDatetime (时间戳: $paymentTimestampMs)
+  可提现时间: ${DateTime.fromMillisecondsSinceEpoch(withdrawAvailableTimestampMs)} (时间戳: $withdrawAvailableTimestampMs)
+  当前状态: ${canWithdraw ? '可提现' : '等待延后一天'}
+''';
+  }
 }
