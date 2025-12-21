@@ -200,6 +200,7 @@ class VerifyPayObj{
            currency: "USD",
            statusMessage: data['payment_status'],
            remainingSeconds: 0);
+       orderStatus!.bank=bank;
        return 'aba';
      }
      // === Stripe 判断（特征最明显，先判）===
@@ -222,6 +223,7 @@ class VerifyPayObj{
          statusMessage: "fChat Pay",
          remainingSeconds: 0);
      bank='fChat Pay';
+     orderStatus!.bank=bank;
      return 'fChat Pay';
    }
 }

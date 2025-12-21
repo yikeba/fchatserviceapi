@@ -13,8 +13,6 @@ class MoneyApi{
     Map<String,dynamic>sendmap=WebPayUtil.getDataMap(map,WebCommand.moneymanagement);
     String rec=await WebPayUtil.httpFchatserver(sendmap);
     RecObj robj=RecObj(rec);
-    //PhoneUtil.applog("读取订单原始资金数据:${robj.data}");
-    //PhoneUtil.applog("读取订单资金数据${robj.json}");
     return robj.json;
 
   }
@@ -52,6 +50,18 @@ class MoneyApi{
 
   }
 
+  //对支付订单进行提现操作
+  static Future<Map> cashPayID(String payid) async {
+    Map map={};
+    map.putIfAbsent("action", ()=> "cash");
+    map.putIfAbsent("payid", ()=> payid);
+    Map<String,dynamic>sendmap=WebPayUtil.getDataMap(map,WebCommand.moneymanagement);
+    String rec=await WebPayUtil.httpFchatserver(sendmap);
+    RecObj robj=RecObj(rec);
+    return robj.json;
+
+  }
+
 }
 
 
@@ -64,7 +74,7 @@ class StripeOrderStatus {
   final String currency;
   final String statusMessage;
   final int remainingSeconds;
-
+  String bank="stripe";
   StripeOrderStatus({
     required this.paid,
     required this.available,
