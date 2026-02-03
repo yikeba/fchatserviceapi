@@ -94,7 +94,7 @@ class FChatApiSdk {
     final value = await WebPayUtil.getDataMap(map, WebCommand.searchCHATid);
     final rec=await WebPayUtil.httpFchatserver(value);
     RecObj recobj =RecObj(rec);
-    PhoneUtil.applog("返回用户信息${recobj.json}");
+    //PhoneUtil.applog("返回用户信息${recobj.json}");
     if(recobj.json.isNotEmpty) {
       return ChatUserobj.withNameAndAge(recobj.json);
     }

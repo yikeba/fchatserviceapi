@@ -24,6 +24,7 @@ class WebUItools{
       PayObj fchatpay=PayObj();
       fchatpay.amount=pobjhtml.money;
       fchatpay.paytext=pobjhtml.paystr;
+
       fchatpay.pay((value){
         Map recmap=JsonUtil.strtoMap(value);
         String payid=recmap["payid"];

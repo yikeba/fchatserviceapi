@@ -193,7 +193,7 @@ class ChatUserobj {
     String? imgurl = "";
     if (map.containsKey("avatarURL")) {
       imgurl = map["avatarURL"];
-      PhoneUtil.applog("读取到用户头像http$imgurl");
+      //PhoneUtil.applog("读取到用户头像http$imgurl");
     }
     if (map.containsKey("type")) {
       type = map["type"];

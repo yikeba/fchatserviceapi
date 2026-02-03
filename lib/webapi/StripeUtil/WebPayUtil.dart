@@ -65,9 +65,6 @@ class WebPayUtil{
        }else{
          verifyPayObj.detectPaymentProvider(paymap);
        }
-      /* if(verifyPayObj.bank=="stripe"){
-         PhoneUtil.applog("支付机构的回调信息，在这里获取id${robj.json}");
-       }*/
        if (robj.json.containsKey("payid")) {
          if (payid!.isEmpty) payid = robj.json["payid"];
        } else {

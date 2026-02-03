@@ -51,14 +51,14 @@ class MoneyApi{
   }
 
   //对支付订单进行提现操作
-  static Future<Map> cashPayID(String payid) async {
+  static Future<String> cashPayID(String payid) async {
     Map map={};
     map.putIfAbsent("action", ()=> "cash");
     map.putIfAbsent("payid", ()=> payid);
     Map<String,dynamic>sendmap=WebPayUtil.getDataMap(map,WebCommand.moneymanagement);
     String rec=await WebPayUtil.httpFchatserver(sendmap);
     RecObj robj=RecObj(rec);
-    return robj.json;
+    return robj.data;
 
   }
 
